@@ -1,0 +1,112 @@
+/* app/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1,
+h2 {
+  font-weight: 700;
+}
+
+button,
+.btn {
+  cursor: pointer;
+}
+
+.websiteDecoration--top {
+  background-image: url("/images/wedding/floral3.png");
+  background-repeat: repeat-x;
+  height: 60px;
+}
+
+.hero-banner {
+  position: relative;
+  height: 400px;
+  background-position: center;
+  background-size: cover;
+  background-image: url("/images/wedding/main1.jpg");
+}
+
+@media (min-width: 768px) {
+  .hero-banner {
+    height: 600px;
+  }
+}
+
+.customFooterBackground {
+  background-image: url("/images/wedding/main2.jpg?") !important;
+}
+
+.websiteHomeHeader {
+  background-image: url("/images/wedding/main1.jpg");
+}
+
+@media screen and (min-width: 48em) {
+  .websiteDecoration--top {
+    background-image: url("/images/wedding/floral3.png");
+  }
+}
+
+@media screen and (max-width: 48em) {
+  .websiteDecoration--top {
+    background-image: url("/images/wedding/floral4.png");
+  }
+}
+
+.websitesAdminHeader {
+  background-color: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 50;
+  position: relative;
+}
+
+.websitesAdminHeader__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.websitesAdminHeader__linkLogo {
+  display: flex;
+  align-items: center;
+}
+
+.app-website-navigation {
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 1rem 2rem;
+}
+
+.websiteNavigation__title {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.websiteNavigation--vertical-secondNav {
+  margin-top: 0.5rem;
+}
+
+.nav-toggle {
+  display: block;
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+  #mobileMenu {
+    display: none !important;
+  }
+}
