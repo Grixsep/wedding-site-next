@@ -21,7 +21,7 @@ const Footer = () => {
               <div className="mb10">
                 <a
                   className="websites-footer__item"
-                  href="/"
+                  href="https://github.com/Grixsep/wedding-site-next"
                   target="_blank"
                   rel="noopener"
                 >

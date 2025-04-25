@@ -10,6 +10,7 @@ export default function ClientGallery({ category }: { category: string }) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [cursor, setCursor] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   useEffect(() => {
     setPhotos([]);
@@ -19,7 +20,6 @@ export default function ClientGallery({ category }: { category: string }) {
   }, [category]);
 
   async function loadMore(start = cursor, cat = category, reset = false) {
-    // hit your Next API which will inject the token for you
     const res = await fetch(
       `/api/photos?photoCursor=${start}&category=${encodeURIComponent(cat)}`,
     );
@@ -30,25 +30,86 @@ export default function ClientGallery({ category }: { category: string }) {
   }
 
   return (
-    <InfiniteScroll
-      dataLength={photos.length}
-      next={loadMore}
-      hasMore={hasMore}
-      loader={<h4 className="text-center mt-4">Loading…</h4>}
-      scrollableTarget="scrollMobile"
-    >
-      <div className="websiteContainerSection mt30 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-        {photos.map((p, i) => (
-          <div key={i} className="relative w-full aspect-square">
+    <>
+      {photos.length === 0 && !hasMore ? (
+        <div className="text-center text-gray-500 mt-6">
+          No Photos, for now ...
+        </div>
+      ) : (
+        <InfiniteScroll
+          dataLength={photos.length}
+          next={loadMore}
+          hasMore={hasMore}
+          loader={<h4 className="text-center mt-4">Loading…</h4>}
+          scrollableTarget="scrollMobile"
+        >
+          <div className="columns-2 sm:columns-3 md:columns-3 gap-2 space-y-2">
+            {photos.map((p, i) => (
+              <div
+                key={i}
+                className="break-inside-avoid overflow-hidden rounded cursor-pointer"
+                onClick={() => setSelectedIndex(i)}
+              >
+                <Image
+                  src={p.url}
+                  alt={`Photo ${i + 1}`}
+                  width={800}
+                  height={600}
+                  layout="responsive"
+                  objectFit="cover"
+                  className="rounded"
+                />
+              </div>
+            ))}
+          </div>
+        </InfiniteScroll>
+      )}
+
+      {/* Fullscreen Lightbox Viewer */}
+      {selectedIndex !== null && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-black bg-opacity-90">
+          {/* Padding for top nav bar */}
+          <div className="h-16 sm:h-20 md:h-24 lg:h-28" />
+
+          <button
+            onClick={() => setSelectedIndex(null)}
+            className="absolute top-16 sm:top-16 md:top-28 lg:top-28 right-4 text-white text-3xl sm:text-4xl p-2 z-50"
+            aria-label="Close fullscreen viewer"
+          >
+            ×
+          </button>
+
+          <div className="flex-1 flex items-center justify-center relative px-4">
+            {selectedIndex > 0 && (
+              <button
+                onClick={() => setSelectedIndex(selectedIndex - 1)}
+                className="absolute left-2 sm:left-6 top-1/2 transform -translate-y-1/2 text-white text-4xl sm:text-6xl p-3 sm:p-5 rounded hover:bg-white/10"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+            )}
+
+            {selectedIndex < photos.length - 1 && (
+              <button
+                onClick={() => setSelectedIndex(selectedIndex + 1)}
+                className="absolute right-2 sm:right-6 top-1/2 transform -translate-y-1/2 text-white text-4xl sm:text-6xl p-3 sm:p-5 rounded hover:bg-white/10"
+                aria-label="Next image"
+              >
+                ›
+              </button>
+            )}
+
             <Image
-              src={p.url}
-              alt={`Photo ${i + 1}`}
-              fill
-              style={{ objectFit: "cover" }}
+              src={photos[selectedIndex].url}
+              alt={`Full image ${selectedIndex + 1}`}
+              width={1200}
+              height={900}
+              className="rounded max-w-full max-h-[80vh] object-contain"
             />
           </div>
-        ))}
-      </div>
-    </InfiniteScroll>
+        </div>
+      )}
+    </>
   );
 }

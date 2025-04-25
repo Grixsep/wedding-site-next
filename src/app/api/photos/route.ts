@@ -1,20 +1,34 @@
-// src/app/api/photos/route.ts
+import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 
-const SCRIPT_URL = process.env.SCRIPT_URL!; // your Apps Script URL
-const SECRET = process.env.RSVP_SECRET!; // same secret as RSVP
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const cursor = searchParams.get("photoCursor") || "0";
-  const category = encodeURIComponent(searchParams.get("category") || "");
+  const tag = searchParams.get("category") || "";
+  const cursor = parseInt(searchParams.get("photoCursor") || "0", 10);
+  const pageSize = 10;
 
-  // include token so your Apps Script won’t reject it
-  const url = `${SCRIPT_URL}?token=${encodeURIComponent(
-    SECRET,
-  )}&photoCursor=${cursor}&category=${category}`;
+  try {
+    const result = await cloudinary.api.resources_by_tag(tag, {
+      max_results: 500,
+    });
 
-  const res = await fetch(url, { next: { revalidate: 60 } });
-  const json = await res.json();
-  return NextResponse.json(json);
+    const all = result.resources
+      .sort((a: any, b: any) => a.public_id.localeCompare(b.public_id)) // Sort by name
+      .map((r: any) => ({ url: r.secure_url }));
+
+    const page = all.slice(cursor, cursor + pageSize);
+    const next =
+      cursor + page.length < all.length ? cursor + page.length : null;
+
+    return NextResponse.json({ page, next });
+  } catch (e) {
+    console.error("Cloudinary Admin API error:", e);
+    return NextResponse.json({ page: [], next: null });
+  }
 }
