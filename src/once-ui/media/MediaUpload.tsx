@@ -45,11 +45,11 @@ const MediaUpload = forwardRef<HTMLInputElement, MediaUploadProps>(
       accept = "image/*",
       ...rest
     },
-    _ref
+    _ref,
   ) => {
     const [dragActive, setDragActive] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(
-      initialPreviewImage
+      initialPreviewImage,
     ); // Use prop as initial state
     const [uploading, setUploading] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -201,7 +201,7 @@ const MediaUpload = forwardRef<HTMLInputElement, MediaUploadProps>(
         />
       </Flex>
     );
-  }
+  },
 );
 
 MediaUpload.displayName = "MediaUpload";
