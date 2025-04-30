@@ -47,7 +47,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
       }
     };
 
-    const handleWheel = (event: WheelEvent) => {
+    const handleWheel = () => {
       if (isEnlarged) {
         setIsEnlarged(false);
       }
@@ -202,7 +202,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
               height: "100vh",
               transform: "translate(-50%, -50%)",
             }}
-            onClick={() => {}}
+            onClick={(event) => event.stopPropagation()}
           >
             {isVideo ? (
               <video

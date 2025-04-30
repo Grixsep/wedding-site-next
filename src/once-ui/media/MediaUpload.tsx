@@ -26,27 +26,24 @@ interface MediaUploadProps extends React.ComponentProps<typeof Flex> {
 }
 
 const MediaUpload = forwardRef<HTMLInputElement, MediaUploadProps>(
-  (
-    {
-      onFileUpload,
-      compress = true,
-      aspectRatio = "16 / 9",
-      quality = 0.8,
-      convertTypes = ["image/png", "image/webp", "image/jpg"],
-      emptyState = "Drag and drop or click to browse",
-      resizeMaxWidth = 1920,
-      resizeMaxHeight = 1920,
-      resizeWidth = 1200,
-      resizeHeight = 1200,
-      loading = false,
-      sizes,
-      children,
-      initialPreviewImage = null,
-      accept = "image/*",
-      ...rest
-    },
-    _ref,
-  ) => {
+  ({
+    onFileUpload,
+    compress = true,
+    aspectRatio = "16 / 9",
+    quality = 0.8,
+    convertTypes = ["image/png", "image/webp", "image/jpg"],
+    emptyState = "Drag and drop or click to browse",
+    resizeMaxWidth = 1920,
+    resizeMaxHeight = 1920,
+    resizeWidth = 1200,
+    resizeHeight = 1200,
+    loading = false,
+    sizes,
+    children,
+    initialPreviewImage = null,
+    accept = "image/*",
+    ...rest
+  }) => {
     const [dragActive, setDragActive] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(
       initialPreviewImage,
