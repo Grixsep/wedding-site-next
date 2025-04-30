@@ -1,8 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
 import { NextRequest } from "next/server";
-import { IncomingForm } from "formidable";
-import fs from "fs";
-import { promisify } from "util";
 import { Readable } from "stream";
 
 // Required to handle FormData correctly
