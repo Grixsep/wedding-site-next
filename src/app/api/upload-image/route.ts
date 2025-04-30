@@ -25,6 +25,37 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  const now = new Date();
+  const start = new Date("2026-03-07");
+  const end = new Date("2026-03-28");
+
+  if (now < start) {
+    return new Response(
+      JSON.stringify({ error: "Uploads are not yet open." }),
+      {
+        status: 403,
+      },
+    );
+  }
+
+  if (now > end) {
+    return new Response(JSON.stringify({ error: "Uploads are now closed." }), {
+      status: 403,
+    });
+  }
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  const fileType = file.type;
+
+  if (!allowedTypes.includes(fileType)) {
+    return new Response(
+      JSON.stringify({
+        error: "Only JPG, PNG, or WEBP image files are allowed.",
+      }),
+      { status: 400 },
+    );
+  }
+
   const MAX_FILE_SIZE_MB = 10;
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);

@@ -2,6 +2,14 @@
 
 import { MediaUpload } from "@/src/once-ui/media/MediaUpload";
 import toast from "react-hot-toast";
+import Link from "next/link";
+
+const now = new Date();
+const start = new Date("2026-03-07");
+const end = new Date("2026-03-28");
+
+const uploadState: "notYet" | "open" | "closed" =
+  now < start ? "notYet" : now > end ? "closed" : "open";
 
 const handleFileUploadToServer = async (file: File) => {
   const toastId = toast.loading("Uploading...");
@@ -65,26 +73,53 @@ export default function Accommodations() {
 
               <hr className="hrSection" />
 
-              {/* Media Upload */}
-              <div
-                className="w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto px-4"
-                style={{
-                  display: "inline-block",
-                  outline: "2px dashed #444",
-                  outlineOffset: "6px",
-                  padding: "4px", // Optional spacing between image and outline
-                  borderRadius: "8px",
-                }}
-              >
-                <MediaUpload
-                  compress={true}
-                  quality={0.8}
-                  loading={false}
-                  aspectRatio="auto"
-                  initialPreviewImage="/images/upload/Upload-image.png"
-                  onFileUpload={handleFileUploadToServer}
-                />
-              </div>
+              {uploadState === "open" && (
+                // Media Upload
+                <div
+                  className="w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto px-4"
+                  style={{
+                    display: "inline-block",
+                    outline: "2px dashed #444",
+                    outlineOffset: "6px",
+                    padding: "4px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <MediaUpload
+                    compress={true}
+                    quality={0.8}
+                    loading={false}
+                    aspectRatio="auto"
+                    initialPreviewImage="/images/upload/Upload-image.png"
+                    onFileUpload={handleFileUploadToServer}
+                  />
+                </div>
+              )}
+
+              {uploadState === "notYet" && (
+                <div className="text-center py-10">
+                  <h2 className="text-xl font-semibold mb-2">
+                    Uploads aren't open yet
+                  </h2>
+                  <p className="mb-4">
+                    Check back on March 7 to share your photos!
+                  </p>
+                </div>
+              )}
+
+              {uploadState === "closed" && (
+                <div className="text-center py-10">
+                  <h2 className="text-xl font-semibold mb-2">
+                    Uploads are now closed
+                  </h2>
+                  <p className="mb-4">
+                    Thanks for sharing your memories with us!
+                  </p>
+                  <Link href="/photos" className="text-blue-600 underline">
+                    🎉 Check out the photo gallery →
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
