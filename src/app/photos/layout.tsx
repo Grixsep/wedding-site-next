@@ -52,6 +52,7 @@ export default function PhotosLayout({
                 </div>
               </div>
             </div>
+            {/* This needs to be updated / removed but a gap added */}
             <hr className="hrSection" />
 
             {/* Tabs */}
