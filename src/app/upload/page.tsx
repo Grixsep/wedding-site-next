@@ -1,13 +1,34 @@
 "use client";
 
 import { MediaUpload } from "@/src/once-ui/media/MediaUpload";
+import toast from "react-hot-toast";
+
+const handleFileUploadToServer = async (file: File) => {
+  const toastId = toast.loading("Uploading...");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await fetch("/api/upload-image", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Upload failed");
+
+    toast.success("Upload successful!", { id: toastId });
+
+    console.log("Image uploaded to:", data.url);
+  } catch (err) {
+    console.error(err);
+    toast.error("Upload failed.", { id: toastId });
+  }
+};
 
 export default function Accommodations() {
-  const handleFileUploadRedirect = async (file: File) => {
-    console.log("File uploaded:", file);
-    window.location.href = "/";
-  };
-
   return (
     <>
       <div className="pt-24 sm:pt-32 md:pt-36 lg:pt-40">
@@ -61,7 +82,7 @@ export default function Accommodations() {
                   loading={false}
                   aspectRatio="auto"
                   initialPreviewImage="/images/upload/Upload-image.png"
-                  onFileUpload={handleFileUploadRedirect}
+                  onFileUpload={handleFileUploadToServer}
                 />
               </div>
             </div>
