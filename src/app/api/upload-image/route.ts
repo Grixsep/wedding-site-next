@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       JSON.stringify({ error: "Uploads are not yet open." }),
       {
         status: 403,
-      }
+      },
     );
   }
 
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       JSON.stringify({
         error: "Only JPG, PNG, or WEBP image files are allowed.",
       }),
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       JSON.stringify({ error: "File too large - 10MB limit" }),
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
-        }
+        },
       );
 
       const readable = new Readable();
