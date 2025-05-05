@@ -134,16 +134,11 @@ const Flex = forwardRef<HTMLDivElement, ComponentProps>(
     const sizeClass = textSize ? `font-${textSize}` : "";
     const weightClass = textWeight ? `font-${textWeight}` : "";
 
-    const variantClasses = textVariant
-      ? getVariantClasses(textVariant)
-      : [sizeClass, weightClass];
+    const variantClasses = textVariant ? getVariantClasses(textVariant) : [sizeClass, weightClass];
 
     let colorClass = "";
     if (onBackground) {
-      const [scheme, weight] = onBackground.split("-") as [
-        ColorScheme,
-        ColorWeight,
-      ];
+      const [scheme, weight] = onBackground.split("-") as [ColorScheme, ColorWeight];
       colorClass = `${scheme}-on-background-${weight}`;
     } else if (onSolid) {
       const [scheme, weight] = onSolid.split("-") as [ColorScheme, ColorWeight];
@@ -206,8 +201,7 @@ const Flex = forwardRef<HTMLDivElement, ComponentProps>(
         !borderStyle &&
         "border-solid",
       border && !borderWidth && "border-1",
-      (borderTop || borderRight || borderBottom || borderLeft) &&
-        "border-reset",
+      (borderTop || borderRight || borderBottom || borderLeft) && "border-reset",
       borderTop && "border-top-1",
       borderRight && "border-right-1",
       borderBottom && "border-bottom-1",
@@ -237,15 +231,11 @@ const Flex = forwardRef<HTMLDivElement, ComponentProps>(
       overflowY && `overflow-y-${overflowY}`,
       flex && `flex-${flex}`,
       horizontal &&
-        (direction === "row" ||
-        direction === "row-reverse" ||
-        direction === undefined
+        (direction === "row" || direction === "row-reverse" || direction === undefined
           ? `justify-${horizontal}`
           : `align-${horizontal}`),
       vertical &&
-        (direction === "row" ||
-        direction === "row-reverse" ||
-        direction === undefined
+        (direction === "row" || direction === "row-reverse" || direction === undefined
           ? `align-${vertical}`
           : `justify-${vertical}`),
       center && "center",

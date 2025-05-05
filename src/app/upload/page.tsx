@@ -2,9 +2,13 @@
 
 import { MediaUpload } from "@/src/once-ui/media/MediaUpload";
 import toast from "react-hot-toast";
-import Link from "next/link";
+import { Arrow, Button, ElementType } from "@/src/once-ui/components";
 
-const now = new Date();
+const now =
+  process.env.NODE_ENV === "development"
+    ? new Date("2026-03-29") // 👈 simulate the date
+    : new Date();
+
 const start = new Date("2026-03-07");
 const end = new Date("2026-03-28");
 
@@ -115,9 +119,27 @@ export default function Accommodations() {
                   <p className="mb-4">
                     Thanks for sharing your memories with us!
                   </p>
-                  <Link href="/photos" className="text-blue-600 underline">
-                    🎉 Check out the photo gallery →
-                  </Link>
+                  <a
+                    href="/photos/ceremony"
+                    id="checkGallery"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white text-base font-medium rounded-full hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    🎉 Check out the photo gallery
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </a>
                 </div>
               )}
             </div>

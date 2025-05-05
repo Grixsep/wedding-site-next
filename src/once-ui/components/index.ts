@@ -15,3 +15,7 @@ export * from "./Spinner";
 export * from "./Text";
 
 export * from "./Tooltip";
+export * from "./Button";
+export * from "./SmartLink";
+export * from "./Arrow";
+export * from "./ElementType";

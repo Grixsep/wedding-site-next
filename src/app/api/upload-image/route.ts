@@ -25,7 +25,11 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const now = new Date();
+  const now =
+    process.env.NODE_ENV === "development"
+      ? new Date("2026-03-29") // 👈 for testing different states
+      : new Date();
+
   const start = new Date("2026-03-07");
   const end = new Date("2026-03-28");
 
@@ -34,7 +38,7 @@ export async function POST(req: NextRequest) {
       JSON.stringify({ error: "Uploads are not yet open." }),
       {
         status: 403,
-      },
+      }
     );
   }
 
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
       JSON.stringify({
         error: "Only JPG, PNG, or WEBP image files are allowed.",
       }),
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -65,7 +69,7 @@ export async function POST(req: NextRequest) {
       JSON.stringify({ error: "File too large - 10MB limit" }),
       {
         status: 400,
-      },
+      }
     );
   }
 
@@ -76,7 +80,7 @@ export async function POST(req: NextRequest) {
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
-        },
+        }
       );
 
       const readable = new Readable();

@@ -49,8 +49,7 @@ export interface FlexProps extends HTMLAttributes<HTMLDivElement> {
   flex?: flex;
 }
 
-export interface TextProps<T extends ElementType = "span">
-  extends HTMLAttributes<T> {
+export interface TextProps<T extends ElementType = "span"> extends HTMLAttributes<T> {
   as?: T;
   variant?: TextVariant;
   wrap?: CSSProperties["textWrap"];
@@ -169,7 +168,7 @@ export interface DisplayProps extends HTMLAttributes<HTMLDivElement> {
     | "macro-short"
     | "macro-medium"
     | "macro-long";
-  opacity?: opacity;
+    opacity?: opacity;
   zIndex?: -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   dark?: boolean;
   light?: boolean;
