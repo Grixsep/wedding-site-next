@@ -2,7 +2,8 @@
 
 import { MediaUpload } from "@/src/once-ui/media/MediaUpload";
 import toast from "react-hot-toast";
-import { Arrow, Button, ElementType } from "@/src/once-ui/components";
+import Link from "next/link";
+// import { Arrow, Button, ElementType } from "@/src/once-ui/components";
 
 const now =
   process.env.NODE_ENV === "development"
@@ -119,7 +120,7 @@ export default function Accommodations() {
                   <p className="mb-4">
                     Thanks for sharing your memories with us!
                   </p>
-                  <a
+                  <Link
                     href="/photos/ceremony"
                     id="checkGallery"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white text-base font-medium rounded-full hover:bg-blue-700 transition-colors duration-200"
@@ -139,7 +140,7 @@ export default function Accommodations() {
                         d="M9 5l7 7-7 7"
                       />
                     </svg>
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
