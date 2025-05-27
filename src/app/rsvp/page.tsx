@@ -52,7 +52,13 @@ type Member = { first: string; last: string; plus_one: string };
 
 export default function RSVP() {
   const [step, setStep] = useState<
-    "search" | "select" | "attend" | "display" | "done"
+    | "search"
+    | "select"
+    | "attend"
+    | "menu" // ← new
+    | "dietary" // ← new
+    | "final" // ← new
+    | "done"
   >("search");
   const [query, setQuery] = useState({ first: "", last: "" });
   const [household, setHousehold] = useState("");
@@ -61,6 +67,12 @@ export default function RSVP() {
   const [attending, setAttending] = useState<"Yes" | "No">("Yes");
   const [showName, setShowName] = useState(true);
   const [loading, setLoading] = useState(false);
+  // per-person menu choices and dietary maps, plus global transport flag
+  const [menuChoices, setMenuChoices] = useState<
+    Record<string, "1" | "2" | "3">
+  >({}); // ← new
+  const [diets, setDiets] = useState<Record<string, string>>({}); // ← new
+  const [transport, setTransport] = useState(false); // ← new
 
   // 1) search handler
   async function handleSearch(e: React.FormEvent) {
@@ -106,6 +118,19 @@ export default function RSVP() {
     );
   }
 
+  // whenever the selected array changes, seed menuChoices and diets
+  useEffect(() => {
+    const m: Record<string, "1" | "2" | "3"> = {};
+    const d: Record<string, string> = {};
+    selected.forEach((p) => {
+      const key = `${p.first}-${p.last}`;
+      m[key] = menuChoices[key] || ""; // blank until chosen
+      d[key] = diets[key] || ""; // blank until typed
+    });
+    setMenuChoices(m);
+    setDiets(d);
+  }, [selected]);
+
   // final submit
   async function handleSubmit() {
     if (selected.length === 0) {
@@ -116,14 +141,15 @@ export default function RSVP() {
     try {
       await fetch("/api/rsvp", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           household,
           selected,
           attending,
-          show_name: attending === "Yes" && showName ? "Yes" : "No",
+          show_name: showName ? "Yes" : "No",
+          menu: menuChoices, // ← all menu picks
+          dietary: diets, // ← all dietary inputs
+          transport: transport ? "Yes" : "No",
         }),
       });
       toast.success("RSVP recorded! 🎉");
@@ -299,14 +325,10 @@ export default function RSVP() {
                     </label>
                   </div>
                   <button
-                    onClick={() => {
-                      if (attending === "No") {
-                        // Directly submit without showing name
-                        handleSubmit();
-                      } else {
-                        setStep("display");
-                      }
-                    }}
+                    onClick={
+                      () =>
+                        attending === "No" ? handleSubmit() : setStep("menu") // ← new
+                    }
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                   >
                     {attending === "No" ? "Confirm RSVP" : "Next"}
@@ -314,24 +336,114 @@ export default function RSVP() {
                 </Modal>
               )}
 
-              {/* Display Names Modal */}
-              {step === "display" && (
+              {/* Menu Selection Modal */}
+              {step === "menu" && (
                 <Modal onClose={() => setStep("attend")}>
-                  <h2 className="text-xl mb-4">
-                    Show names on the guest list?
-                  </h2>
-                  <label className="flex items-center space-x-2">
+                  <h2 className="text-xl mb-4">Choose a main course</h2>
+                  <div className="space-y-4 max-h-80 overflow-auto">
+                    {selected.map((m) => {
+                      const key = `${m.first}-${m.last}`;
+                      return (
+                        <label key={key} className="flex flex-col">
+                          <span className="font-semibold">
+                            {m.first} {m.last}
+                          </span>
+                          <select
+                            className="mt-1 p-2 border rounded"
+                            value={menuChoices[key] || ""}
+                            onChange={(e) =>
+                              setMenuChoices((mc) => ({
+                                ...mc,
+                                [key]: e.target.value as "1" | "2" | "3",
+                              }))
+                            }
+                          >
+                            <option value="">Select menu…</option>
+                            <option value="1">Menu 1</option>
+                            <option value="2">Menu 2</option>
+                            <option value="3">Menu 3</option>
+                          </select>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <button
+                    disabled={!Object.values(menuChoices).every((v) => v)}
+                    onClick={() => setStep("dietary")}
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </Modal>
+              )}
+
+              {/* Dietary Restrictions Modal */}
+              {step === "dietary" && (
+                <Modal onClose={() => setStep("menu")}>
+                  <h2 className="text-xl mb-4">Any dietary restrictions?</h2>
+                  <div className="space-y-4 max-h-80 overflow-auto">
+                    {selected.map((m) => {
+                      const key = `${m.first}-${m.last}`;
+                      return (
+                        <label key={key} className="flex flex-col">
+                          <span className="font-semibold">
+                            {m.first} {m.last}
+                          </span>
+                          <input
+                            type="text"
+                            className="mt-1 p-2 border rounded"
+                            placeholder="e.g. gluten-free, nut allergy…"
+                            value={diets[key] || ""}
+                            onChange={(e) =>
+                              setDiets((d) => ({ ...d, [key]: e.target.value }))
+                            }
+                          />
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={() => setStep("final")}
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                  >
+                    Next
+                  </button>
+                </Modal>
+              )}
+
+              {/* Final Preferences Modal */}
+              {step === "final" && (
+                <Modal onClose={() => setStep("dietary")}>
+                  <h2 className="text-xl mb-4">Final preferences</h2>
+
+                  <label className="flex items-center space-x-2 mb-4">
                     <input
                       type="checkbox"
                       checked={showName}
                       onChange={(e) => setShowName(e.target.checked)}
                     />
-                    <span>Yes, display our names</span>
+                    <span>Display our names on the guest list</span>
+                    <span className="text-sm text-gray-500 ml-1">
+                      (recommended)
+                    </span>
                   </label>
+
+                  <label className="flex items-center space-x-2 mb-6">
+                    <input
+                      type="checkbox"
+                      checked={transport}
+                      onChange={(e) => setTransport(e.target.checked)}
+                    />
+                    <span>We need transportation</span>
+                    <span className="text-sm text-gray-500 ml-6">
+                      Shuttle runs to/from The Domain and the venue.
+                    </span>
+                  </label>
+
                   <button
                     onClick={handleSubmit}
                     disabled={loading}
-                    className={`mt-4 px-4 py-2 rounded transition ${
+                    className={`px-4 py-2 rounded transition ${
                       loading
                         ? "bg-green-200 text-gray-600 cursor-not-allowed"
                         : "bg-green-600 text-white hover:bg-green-700"
