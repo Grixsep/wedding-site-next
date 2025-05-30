@@ -8,35 +8,128 @@ export default function Accommodations() {
   const hotels = [
     {
       name: "The Archer Hotel",
-      image: "/images/accommodations/archer.jpg",
+      images: [
+        "/images/accommodations/archer/1.jpg",
+        "/images/accommodations/archer/2.jpg",
+        "/images/accommodations/archer/3.jpg",
+      ],
       description:
         "Upscale boutique hotel in The Domain with rooftop pool, onsite restaurants, and complimentary bikes.",
       mapLink: "https://goo.gl/maps/6VaH2i8Bb3Y8x9Gk7",
+      bookingLink: "https://www.archerhotel.com/austin/the-domain",
     },
     {
       name: "The Westin Austin ATX",
-      image: "/images/accommodations/westin.jpg",
+      images: [
+        "/images/accommodations/archer/1.jpg",
+        "/images/accommodations/archer/2.jpg",
+        "/images/accommodations/archer/3.jpg",
+      ],
       description:
         "Modern rooms, full spa, and walking distance to Domain’s shops & nightlife.",
       mapLink: "https://goo.gl/maps/abcd1234",
+      bookingLink: "https://www.archerhotel.com/austin/the-domain",
     },
     {
       name: "Hyatt House Austin / The Domain",
-      image: "/images/accommodations/hyatt.jpg",
+      images: [
+        "/images/accommodations/archer/1.jpg",
+        "/images/accommodations/archer/2.jpg",
+        "/images/accommodations/archer/3.jpg",
+      ],
       description:
         "Comfortable mid-range option with free hot breakfast and shuttle to the Domain.",
       mapLink: "https://goo.gl/maps/wxyz5678",
+      bookingLink: "https://www.archerhotel.com/austin/the-domain",
     },
   ];
 
-  const settings = {
-    dots: true,
-    infinite: true,
+  // Outer arrows
+  function OuterPrevArrow({
+    onClick,
+  }: {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  }) {
+    return (
+      <button
+        onClick={onClick}
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow hover:bg-opacity-100 z-10"
+      >
+        ‹
+      </button>
+    );
+  }
+  function OuterNextArrow({
+    onClick,
+  }: {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  }) {
+    return (
+      <button
+        onClick={onClick}
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow hover:bg-opacity-100 z-10"
+      >
+        ›
+      </button>
+    );
+  }
+
+  // Inner arrows
+  function InnerPrevArrow({
+    onClick,
+  }: {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  }) {
+    return (
+      <button
+        onClick={onClick}
+        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-1 rounded-full hover:bg-opacity-75 z-10"
+      >
+        ‹
+      </button>
+    );
+  }
+  function InnerNextArrow({
+    onClick,
+  }: {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  }) {
+    return (
+      <button
+        onClick={onClick}
+        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-1 rounded-full hover:bg-opacity-75 z-10"
+      >
+        ›
+      </button>
+    );
+  }
+
+  const outerSettings = {
+    dots: false,
+    infinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    adaptiveHeight: true,
-    arrows: false,
+    arrows: true,
+    prevArrow: <OuterPrevArrow />,
+    nextArrow: <OuterNextArrow />,
+  };
+
+  const innerSettings = {
+    dots: false,
+    infinite: true,
+    speed: 400,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: true,
+    prevArrow: <InnerPrevArrow />,
+    nextArrow: <InnerNextArrow />,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: { slidesToShow: 1 },
+      },
+    ],
   };
 
   return (
@@ -77,32 +170,49 @@ export default function Accommodations() {
               </div>
 
               {/* Accommodation Options */}
-              <div className="max-w-4xl mx-auto mt-8 mb-12">
-                <Slider {...settings}>
+              <div className="relative max-w-4xl mx-auto mt-8 mb-12">
+                <Slider {...outerSettings}>
                   {hotels.map((hotel) => (
-                    <div key={hotel.name} className="px-2">
-                      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                        <img
-                          src={hotel.image}
-                          alt={hotel.name}
-                          className="w-full h-64 object-cover"
-                        />
-                        <div className="p-6">
-                          <h2 className="text-2xl font-semibold mb-2">
-                            {hotel.name}
-                          </h2>
-                          <p className="text-gray-700 mb-4">
-                            {hotel.description}
-                          </p>
-                          <a
-                            href={hotel.mapLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
-                          >
-                            View on Map
-                          </a>
-                        </div>
+                    <div key={hotel.name} className="px-4">
+                      {/* Inner carousel of images */}
+                      <div className="relative">
+                        <Slider {...innerSettings}>
+                          {hotel.images.map((src, idx) => (
+                            <div key={idx} className="px-2">
+                              <img
+                                src={src}
+                                alt={`${hotel.name} ${idx + 1}`}
+                                className="w-full h-56 object-cover rounded-xl"
+                              />
+                            </div>
+                          ))}
+                        </Slider>
+                      </div>
+
+                      {/* Hotel info below images */}
+                      <div className="bg-white rounded-b-2xl shadow-lg p-6 -mt-4 relative z-0">
+                        <h2 className="text-2xl font-semibold mb-2">
+                          {hotel.name}
+                        </h2>
+                        <p className="text-gray-700 mb-4">
+                          {hotel.description}
+                        </p>
+                        <a
+                          href={hotel.bookingLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
+                        >
+                          Book Now!
+                        </a>
+                        <a
+                          href={hotel.mapLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
+                        >
+                          View on Map
+                        </a>
                       </div>
                     </div>
                   ))}
