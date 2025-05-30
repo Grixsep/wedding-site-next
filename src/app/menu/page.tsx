@@ -35,26 +35,20 @@ export default function MenuPage() {
                 </div>
               </div>
 
-              {/* Menu Embedded PDF */}
-              <div className="menu-embed-container my-8 border rounded-lg overflow-hidden shadow-md">
-                <object
-                  data="/pdf/Wedding-Menu.pdf"
-                  type="application/pdf"
-                  width="100%"
-                  height="800px"
-                >
-                  <p className="p-4 text-center">
-                    Your browser doesn’t support inline PDFs.{" "}
-                    <a
-                      href="/wedding-menu.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline"
-                    >
-                      Click here to view or download the menu.
-                    </a>
-                  </p>
-                </object>
+              {/* ─── Menu as images (no inner scroll) ─── */}
+              <div className="flex flex-col items-center space-y-8 my-8">
+                {/* Export page 1 from Canva as wedding-menu-1.png */}
+                <img
+                  src="/wedding-menu-1.png"
+                  alt="Wedding Menu Page 1"
+                  className="w-full max-w-3xl"
+                />
+                {/* If you have a second page: */}
+                {/* <img
+                  src="/wedding-menu-2.png"
+                  alt="Wedding Menu Page 2"
+                  className="w-full max-w-3xl"
+                /> */}
               </div>
 
               <div
