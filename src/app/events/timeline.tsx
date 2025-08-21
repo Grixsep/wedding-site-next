@@ -15,7 +15,7 @@ import { useTheme } from "@mui/material/styles";
 // Icons
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
+//import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import RoomIcon from "@mui/icons-material/Room";
 import Celebration from "@mui/icons-material/Celebration";
