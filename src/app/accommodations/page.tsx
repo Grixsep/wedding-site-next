@@ -10,6 +10,7 @@ import {
   FaMapMarkerAlt,
   FaBed,
   FaDollarSign,
+  FaCompass,
 } from "react-icons/fa";
 
 // Star Rating Component
@@ -77,90 +78,90 @@ export default function Accommodations() {
 
   const hotels = [
     {
-      name: "The Archer Hotel",
-      tagline: "Boutique Luxury in The Domain",
+      name: "Archer Hotel Austin",
+      tagline: "Boutique luxury in The Domain",
       images: [
         "/images/accommodations/archer/1.jpg",
         "/images/accommodations/archer/2.jpg",
         "/images/accommodations/archer/3.jpg",
       ],
       description:
-        "Upscale boutique hotel with rooftop pool, on-site restaurants, and complimentary bikes. Walking distance to premium shopping and dining.",
-      features: ["Rooftop Pool", "Free Bikes", "Pet Friendly", "Valet Parking"],
+        "Design-forward boutique stay with a lively lobby bar and a small rooftop pool. Steps from Domain restaurants, shops, and nightlife.",
+      features: ["Rooftop Pool", "Lobby Bar", "Pet Friendly", "Valet Parking"],
       rating: 4.5,
       priceLevel: 4 as 1 | 2 | 3 | 4,
-      distance: "0.2 miles from venue shuttle",
+      distance: "In The Domain",
       mapLink: "https://goo.gl/maps/6VaH2i8Bb3Y8x9Gk7",
       bookingLink: "https://www.archerhotel.com/austin/the-domain",
-      recommended: true, // Highlighted hotels in the domain area
+      recommended: true, // In the Domain
       hasHotelBlock: true,
       blockCode: "LEDEWHURST-WEDDING",
     },
     {
       name: "The Westin Austin at The Domain",
-      tagline: "Modern Comfort & Convenience",
+      tagline: "Modern comfort & easy access",
       images: [
         "/images/accommodations/westin/westin1.jpg",
         "/images/accommodations/westin/westin2.jpg",
         "/images/accommodations/westin/westin3.jpg",
       ],
       description:
-        "Contemporary rooms with spa services, pool, and multiple dining options. Located in the heart of The Domain's shopping district.",
+        "Bright, modern rooms with a relaxing pool and on-site dining. Right by Domain's main strip for quick eats, coffee, and shopping.",
       features: [
-        "Full Spa",
         "Outdoor Pool",
         "Fitness Center",
+        "Restaurant & Bar",
         "Business Center",
       ],
       rating: 4.3,
       priceLevel: 3 as 1 | 2 | 3 | 4,
-      distance: "0.3 miles from venue shuttle",
+      distance: "In The Domain",
       mapLink: "https://goo.gl/maps/abcd1234",
       bookingLink:
         "https://www.marriott.com/hotels/travel/auswi-the-westin-austin-at-the-domain/",
-      recommended: true,
+      recommended: true, // In the Domain
       hasHotelBlock: true,
       blockCode: "LEDEWHURST-WEDDING",
     },
     {
-      name: "Aloft Austin Domain",
-      tagline: "Hip & Modern Vibes",
+      name: "Aloft Austin at The Domain",
+      tagline: "Hip, social, and music-friendly",
       images: [
         "/images/accommodations/aloft/aloft1.jpg",
         "/images/accommodations/aloft/aloft2.jpg",
         "/images/accommodations/aloft/aloft3.jpg",
       ],
       description:
-        "Trendy hotel with vibrant social spaces, pool, and live music. Perfect for guests who want a fun, modern atmosphere.",
+        "Trendy hangout with vibrant common spaces, pool, and casual live music. Great for guests who want a fun, youthful vibe.",
       features: ["Live Music", "Pool", "24/7 Gym", "Pet Friendly"],
       rating: 4.2,
       priceLevel: 3 as 1 | 2 | 3 | 4,
-      distance: "0.4 miles from venue shuttle",
+      distance: "In The Domain",
       mapLink: "https://goo.gl/maps/xyz789",
       bookingLink:
         "https://www.marriott.com/hotels/travel/ausaa-aloft-austin-domain/",
-      recommended: true,
+      recommended: true, // In the Domain
       hasHotelBlock: false,
     },
     {
-      name: "Hyatt PLace Austin/arboretum",
-      tagline: "Extended Stay Comfort",
+      name: "Hyatt House Austin/Arboretum",
+      tagline: "Suite-style comfort",
       images: [
-        "/images/accommodations/archer/1.jpg", // Replace with actual Hyatt images
+        "/images/accommodations/archer/1.jpg", // TODO: swap to actual Hyatt images
         "/images/accommodations/archer/2.jpg",
         "/images/accommodations/archer/3.jpg",
       ],
       description:
-        "A bit fruther out with spacious suites with kitchenettes, perfect for families. Includes complimentary hot breakfast and evening social hour.",
+        "Spacious suites with kitchenettes, free hot breakfast, and a low-key vibe. A short rideshare to the Domain (good for families).",
       features: [
         "Free Breakfast",
         "Kitchen Suites",
         "Evening Social",
-        "Grocery Shopping Service",
+        "On-site Laundry",
       ],
       rating: 4.0,
       priceLevel: 2 as 1 | 2 | 3 | 4,
-      distance: "0.5 miles from venue shuttle",
+      distance: "Near The Domain (~8-12 min drive)",
       mapLink: "https://goo.gl/maps/wxyz5678",
       bookingLink:
         "https://www.hyatt.com/en-US/hotel/texas/hyatt-house-austin-arboretum-domain/",
@@ -169,21 +170,21 @@ export default function Accommodations() {
     },
     {
       name: "La Quinta Inn & Suites",
-      tagline: "Budget-Friendly Option",
+      tagline: "Solid budget option",
       images: [
         "/images/accommodations/laquinta/laquinta1.png",
         "/images/accommodations/laquinta/laquinta2.png",
         "/images/accommodations/laquinta/laquinta3.png",
       ],
       description:
-        "Comfortable and affordable accommodations with breakfast included. A great value option near The Domain.",
+        "Straightforward and affordable with breakfast included. Good value pick with a small walk to the Domain.",
       features: ["Free Breakfast", "Pool", "Free Parking", "Pet Friendly"],
       rating: 3.8,
       priceLevel: 1 as 1 | 2 | 3 | 4,
-      distance: "1.2 miles from venue shuttle",
+      distance: "Near The Domain (~10-15 min walk)",
       mapLink: "https://goo.gl/maps/laquinta123",
       bookingLink: "https://www.lq.com/",
-      recommended2: true, // Highlighted hotels near the domain area
+      nearDomain: true, // New flag
       hasHotelBlock: false,
     },
   ];
@@ -366,9 +367,10 @@ export default function Accommodations() {
                                 ⭐ In the Domain
                               </div>
                             )}
-                            {hotel.recommended2 && (
-                              <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                                ⭐ Near the Domain
+                            {hotel.nearDomain && (
+                              <div className="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
+                                <FaCompass className="opacity-90" />
+                                <span>Near The Domain</span>
                               </div>
                             )}
                             {hotel.hasHotelBlock && (
