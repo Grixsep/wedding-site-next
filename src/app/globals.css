@@ -110,3 +110,9 @@ button,
     display: none !important;
   }
 }
+
+.vertical-timeline::before {
+  background-image: url("/images/events/vine3.png");
+  background-repeat: repeat-y;
+  background-size: contain;
+}
