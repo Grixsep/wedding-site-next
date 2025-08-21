@@ -177,7 +177,7 @@ export default function CustomizedTimeline() {
             )}
 
             <TimelineSeparator>
-              {<VineConnector />}
+              <VineConnector />
 
               <TimelineDot
                 sx={{
@@ -196,7 +196,7 @@ export default function CustomizedTimeline() {
                 {event.icon}
               </TimelineDot>
 
-              {<VineConnector />}
+              <VineConnector />
             </TimelineSeparator>
 
             <TimelineContent
