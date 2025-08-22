@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s | An & Paul Wedding",
   },
   description:
-    "Join us in Georgetown, TX on March 14, 2026. Weekend events, venue details, accommodations, travel tips, and RSVP info.",
+    "Join us in Texas on March 14, 2026. Weekend events, venue details, accommodations, travel tips, and RSVP info.",
   applicationName: "An & Paul Wedding",
   keywords: [
     "An and Paul wedding",
@@ -57,23 +57,21 @@ export const metadata: Metadata = {
       "We can't wait to celebrate with you in Texas. See events, venue, and hotel info.",
     images: [
       {
-        url: "https://wedding.paacs.pro/images/og/og-image.png", // replace with your image
+        url: "/images/og/og-image.png",
         width: 1200,
         height: 630,
         alt: "An & Paul — March 14, 2026",
-        type: "image/jpeg",
+        type: "image/png",
       },
     ],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    site: "@your_handle", // optional
-    creator: "@your_handle", // optional
     title: "An & Paul — March 14, 2026",
     description:
       "All the details for the big day in Georgetown, TX — events, venue, and hotels.",
-    images: ["https://wedding.paacs.pro/images/og/og-image.png"],
+    images: ["/images/og/og-image.png"],
   },
 };
 
