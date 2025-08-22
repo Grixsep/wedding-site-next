@@ -21,7 +21,7 @@ const inter = Inter({ subsets: ["latin"] });
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://wedding.paacs.pro"),
+  metadataBase: new URL("https://wedding.ledewhurst.com"),
   title: {
     default: "An & Paul — March 14, 2026",
     template: "%s | An & Paul Wedding",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    url: "https://wedding.paacs.pro/",
+    url: "https://wedding.ledewhurst.com",
     siteName: "An & Paul Wedding",
     title: "An & Paul — March 14, 2026",
     description:
