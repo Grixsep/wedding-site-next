@@ -10,6 +10,7 @@ A beautiful, modern wedding website built with Next.js 15, featuring an elegant 
 ## ✨ Features
 
 ### 🎯 Core Features
+
 - **Smart RSVP System**: Multi-step flow with household management, meal selections, and dietary restrictions
 - **Photo Galleries**: Category-based infinite scroll galleries powered by Cloudinary
 - **Guest Photo Uploads**: Time-gated upload system (March 7-28, 2026) with compression
@@ -18,6 +19,7 @@ A beautiful, modern wedding website built with Next.js 15, featuring an elegant 
 - **Accommodation Info**: Hotel recommendations with image carousels
 
 ### 🔒 Security & Performance
+
 - **Secure Authentication**: HTTP-only cookies with shared secret validation
 - **Rate Limiting**: Built-in protection for API endpoints
 - **Image Optimization**: Automatic compression and Next.js Image optimization
@@ -27,6 +29,7 @@ A beautiful, modern wedding website built with Next.js 15, featuring an elegant 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 20.18.0 or higher
 - Yarn 1.22.22 (or npm)
 - Google Account (for Sheets integration)
@@ -35,22 +38,26 @@ A beautiful, modern wedding website built with Next.js 15, featuring an elegant 
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/grixsep/wedding-site.git
 cd wedding-site
 ```
 
 2. **Install dependencies**
+
 ```bash
 yarn install  # or npm install
 ```
 
 3. **Set up environment variables**
+
 ```bash
 cp .env.example .env.local
 ```
 
 Fill in your `.env.local`:
+
 ```env
 # Google Apps Script Web App URL
 SCRIPT_URL=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
@@ -65,6 +72,7 @@ CLOUDINARY_API_SECRET=your-api-secret
 ```
 
 4. **Run development server**
+
 ```bash
 yarn dev
 ```
@@ -97,6 +105,7 @@ src/
 ## 🔧 Google Sheets Setup
 
 ### 1. Create Google Sheets
+
 Create a spreadsheet with these sheets:
 
 **Invitees Sheet**
@@ -140,7 +149,8 @@ const RSP = ss.getSheetByName("RSVPs");
 const PHOTOS = ss.getSheetByName("Photos");
 
 // Get secret from Script Properties
-const SECRET = PropertiesService.getScriptProperties().getProperty("RSVP_SECRET");
+const SECRET =
+  PropertiesService.getScriptProperties().getProperty("RSVP_SECRET");
 
 function doGet(e) {
   // Photo pagination (public)
@@ -148,59 +158,67 @@ function doGet(e) {
     const cursor = parseInt(e.parameter.photoCursor) || 0;
     const category = e.parameter.category || "";
     const pageSize = 10;
-    
-    const photos = PHOTOS.getDataRange().getValues()
-      .filter(row => row[1] === "Yes" && row[2] === category)
-      .map(row => ({ url: row[0] }));
-    
+
+    const photos = PHOTOS.getDataRange()
+      .getValues()
+      .filter((row) => row[1] === "Yes" && row[2] === category)
+      .map((row) => ({ url: row[0] }));
+
     const page = photos.slice(cursor, cursor + pageSize);
-    const next = cursor + page.length < photos.length ? cursor + page.length : null;
-    
-    return ContentService.createTextOutput(JSON.stringify({ page, next }))
-      .setMimeType(ContentService.MimeType.JSON);
+    const next =
+      cursor + page.length < photos.length ? cursor + page.length : null;
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ page, next }),
+    ).setMimeType(ContentService.MimeType.JSON);
   }
-  
+
   // RSVP lookup (requires auth)
   if (e.parameter.token !== SECRET) {
-    return ContentService.createTextOutput(JSON.stringify({ error: "Unauthorized" }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(
+      JSON.stringify({ error: "Unauthorized" }),
+    ).setMimeType(ContentService.MimeType.JSON);
   }
-  
+
   const { first = "", last = "" } = e.parameter;
   const data = INV.getDataRange().getValues();
-  
+
   // Find matching guests
-  const matches = data.filter(row => 
-    row[0].toLowerCase().includes(first.toLowerCase()) && 
-    row[1].toLowerCase().includes(last.toLowerCase())
+  const matches = data.filter(
+    (row) =>
+      row[0].toLowerCase().includes(first.toLowerCase()) &&
+      row[1].toLowerCase().includes(last.toLowerCase()),
   );
-  
+
   if (matches.length === 0) {
-    return ContentService.createTextOutput(JSON.stringify({ error: "Not found" }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(
+      JSON.stringify({ error: "Not found" }),
+    ).setMimeType(ContentService.MimeType.JSON);
   }
-  
+
   const household = matches[0][2];
   const members = data
-    .filter(row => row[2] === household)
-    .map(row => ({
+    .filter((row) => row[2] === household)
+    .map((row) => ({
       first: row[0],
       last: row[1],
-      plus_one: row[3]
+      plus_one: row[3],
     }));
-  
-  return ContentService.createTextOutput(JSON.stringify({ household, members }))
-    .setMimeType(ContentService.MimeType.JSON);
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ household, members }),
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
   if (e.parameter.token !== SECRET) {
-    return ContentService.createTextOutput(JSON.stringify({ error: "Unauthorized" }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(
+      JSON.stringify({ error: "Unauthorized" }),
+    ).setMimeType(ContentService.MimeType.JSON);
   }
-  
+
   const data = JSON.parse(e.postData.contents);
-  
+
   RSP.appendRow([
     new Date(),
     data.household,
@@ -209,15 +227,17 @@ function doPost(e) {
     data.show_name,
     JSON.stringify(data.menu || {}),
     JSON.stringify(data.dietary || {}),
-    data.transport || "No"
+    data.transport || "No",
   ]);
-  
-  return ContentService.createTextOutput(JSON.stringify({ success: true }))
-    .setMimeType(ContentService.MimeType.JSON);
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ success: true }),
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 ```
 
 3. Set Script Properties:
+
    - Project Settings → Script Properties
    - Add property: `RSVP_SECRET` = `your-secret-key`
 
@@ -231,23 +251,29 @@ function doPost(e) {
 ## 🎨 Customization
 
 ### Theme Colors
+
 Edit `src/app/globals.css` and Tailwind config for your wedding colors:
+
 ```css
 :root {
-  --wedding-primary: #103930;    /* Deep green */
-  --wedding-accent: #d4af37;     /* Gold */
-  --wedding-light: #f4e5b7;      /* Light gold */
+  --wedding-primary: #103930; /* Deep green */
+  --wedding-accent: #d4af37; /* Gold */
+  --wedding-light: #f4e5b7; /* Light gold */
 }
 ```
 
 ### Fonts
+
 The site uses Bodoni for headings and Montserrat for body text. Update in `layout.tsx`:
+
 ```typescript
-import { Bodoni_Moda, Montserrat } from 'next/font/google';
+import { Bodoni_Moda, Montserrat } from "next/font/google";
 ```
 
 ### Event Timeline
+
 Modify events in `src/app/events/timeline.tsx`:
+
 ```typescript
 const EVENTS = [
   {
@@ -261,7 +287,9 @@ const EVENTS = [
 ```
 
 ### Photo Categories
+
 Update categories in `src/app/photos/layout.tsx`:
+
 ```typescript
 const CATS = [
   { key: "ceremony", label: "Ceremony" },
@@ -282,12 +310,14 @@ const CATS = [
 ## 🚢 Deployment
 
 ### Vercel (Recommended)
+
 1. Push to GitHub
 2. Import to [Vercel](https://vercel.com)
 3. Add environment variables
 4. Deploy!
 
 ### Configuration
+
 ```javascript
 // next.config.ts
 const nextConfig = {
@@ -316,14 +346,14 @@ const nextConfig = {
 
 ## 📝 API Endpoints
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/rsvp` | GET | Search for guest | ✅ |
-| `/api/rsvp` | POST | Submit RSVP | ✅ |
-| `/api/photos` | GET | Fetch gallery photos | ❌ |
-| `/api/upload-image` | POST | Upload guest photo | ❌* |
+| Endpoint            | Method | Description          | Auth |
+| ------------------- | ------ | -------------------- | ---- |
+| `/api/rsvp`         | GET    | Search for guest     | ✅   |
+| `/api/rsvp`         | POST   | Submit RSVP          | ✅   |
+| `/api/photos`       | GET    | Fetch gallery photos | ❌   |
+| `/api/upload-image` | POST   | Upload guest photo   | ❌\* |
 
-*Time-gated between specific dates
+\*Time-gated between specific dates
 
 ## 🔐 Security Features
 
@@ -357,6 +387,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 💌 Contact
 
 For questions about adapting this for your wedding:
+
 - Create an issue on GitHub
 - Email: theledewhursts@gmail.com
 
