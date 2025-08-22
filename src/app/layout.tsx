@@ -17,9 +17,64 @@ import "react-vertical-timeline-component/style.min.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "An & Paul’s Wedding",
-  description: "Join us for our special day!",
+// app/layout.tsx
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://wedding.paacs.pro"),
+  title: {
+    default: "An & Paul — March 14, 2026",
+    template: "%s | An & Paul Wedding",
+  },
+  description:
+    "Join us in Georgetown, TX on March 14, 2026. Weekend events, venue details, accommodations, travel tips, and RSVP info.",
+  applicationName: "An & Paul Wedding",
+  keywords: [
+    "An and Paul wedding",
+    "An & Paul",
+    "LeDewhurst",
+    "wedding",
+    "Georgetown TX",
+    "Kindred Oaks",
+    "March 14 2026",
+  ],
+  authors: [{ name: "An & Paul" }],
+  creator: "An & Paul",
+  publisher: "An & Paul",
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/",
+      "en-GB": "/",
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: "https://wedding.paacs.pro/",
+    siteName: "An & Paul Wedding",
+    title: "An & Paul — March 14, 2026",
+    description:
+      "We can't wait to celebrate with you in Texas. See events, venue, and hotel info.",
+    images: [
+      {
+        url: "https://wedding.paacs.pro/images/og/og-image.png", // replace with your image
+        width: 1200,
+        height: 630,
+        alt: "An & Paul — March 14, 2026",
+        type: "image/jpeg",
+      },
+    ],
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@your_handle", // optional
+    creator: "@your_handle", // optional
+    title: "An & Paul — March 14, 2026",
+    description:
+      "All the details for the big day in Georgetown, TX — events, venue, and hotels.",
+    images: ["https://wedding.paacs.pro/images/og/og-image.png"],
+  },
 };
 
 export default function RootLayout({
