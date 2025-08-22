@@ -86,7 +86,7 @@ export default function RSVP() {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/rsvp?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`,
+        `/api/rsvp?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`
       );
       const json = await res.json();
       if (json.error) {
@@ -114,7 +114,7 @@ export default function RSVP() {
     setSelected((s) =>
       s.some((x) => x.first === m.first && x.last === m.last)
         ? s.filter((x) => !(x.first === m.first && x.last === m.last))
-        : [...s, m],
+        : [...s, m]
     );
   }
 
@@ -272,7 +272,7 @@ export default function RSVP() {
                   <div className="space-y-2">
                     {members.map((m, i) => {
                       const checked = selected.some(
-                        (x) => x.first === m.first && x.last === m.last,
+                        (x) => x.first === m.first && x.last === m.last
                       );
                       return (
                         <label key={i} className="flex items-center">
@@ -340,6 +340,15 @@ export default function RSVP() {
               {step === "menu" && (
                 <Modal onClose={() => setStep("attend")}>
                   <h2 className="text-xl mb-4">Choose a main course</h2>
+                  {/* View full menu link (new tab) */}
+                  <a
+                    href="/menu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 px-3 py-1.5 text-sm rounded-md border border-gray-300 hover:bg-gray-50 mb-4 inline-block"
+                  >
+                    View full menu ↗
+                  </a>
                   <div className="space-y-4 max-h-80 overflow-auto">
                     {selected.map((m) => {
                       const key = `${m.first}-${m.last}`;
@@ -359,9 +368,13 @@ export default function RSVP() {
                             }
                           >
                             <option value="">Select menu…</option>
-                            <option value="1">Menu 1</option>
-                            <option value="2">Menu 2</option>
-                            <option value="3">Menu 3</option>
+                            <option value="1">
+                              Wagyu Sirloin with Chimichurri
+                            </option>
+                            <option value="2">
+                              Chicken Breast with Lemon Caper Sauce
+                            </option>
+                            <option value="3">Portobello & Quinoa (V)</option>
                           </select>
                         </label>
                       );
