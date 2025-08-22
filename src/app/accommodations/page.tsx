@@ -52,29 +52,8 @@ const PriceLevel = ({ level }: { level: 1 | 2 | 3 | 4 }) => {
   );
 };
 
-const CornerRibbon = ({ text }: { text: string }) => (
-  <div className="absolute left-0 top-0 z-30">
-    <div className="relative">
-      <span
-        className="
-        absolute -left-[52px] top-[14px] rotate-[-45deg]
-        bg-emerald-600 text-white font-semibold tracking-wide
-        px-6 py-1 shadow-lg
-        after:content-[''] after:absolute after:-left-2 after:top-full after:border-t-8 after:border-l-8 after:border-t-emerald-800 after:border-l-transparent
-        before:content-[''] before:absolute before:-right-2 before:top-full before:border-t-8 before:border-r-8 before:border-t-emerald-800 before:border-r-transparent
-      "
-      >
-        🏨 {text}
-      </span>
-    </div>
-  </div>
-);
-
 export default function Accommodations() {
   const [activeHotel, setActiveHotel] = useState(0);
-  const [activeImageIndexes, setActiveImageIndexes] = useState<{
-    [key: number]: number;
-  }>({});
 
   const hotels = [
     {
