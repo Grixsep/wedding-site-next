@@ -57,7 +57,7 @@ export const metadata: Metadata = {
       "We can't wait to celebrate with you in Texas. See events, venue, and hotel info.",
     images: [
       {
-        url: "/images/og/og-image.png",
+        url: "/images/og/og_image.png",
         width: 1200,
         height: 630,
         alt: "An & Paul — March 14, 2026",
@@ -70,8 +70,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "An & Paul — March 14, 2026",
     description:
-      "All the details for the big day in Georgetown, TX — events, venue, and hotels.",
-    images: ["/images/og/og-image.png"],
+      "All the details for the big day in Texas — events, venue, and hotels.",
+    images: ["/images/og/og_image.png"],
   },
 };
 
