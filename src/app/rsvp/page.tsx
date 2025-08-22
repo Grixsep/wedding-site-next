@@ -86,7 +86,7 @@ export default function RSVP() {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/rsvp?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`
+        `/api/rsvp?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`,
       );
       const json = await res.json();
       if (json.error) {
@@ -114,7 +114,7 @@ export default function RSVP() {
     setSelected((s) =>
       s.some((x) => x.first === m.first && x.last === m.last)
         ? s.filter((x) => !(x.first === m.first && x.last === m.last))
-        : [...s, m]
+        : [...s, m],
     );
   }
 
@@ -272,7 +272,7 @@ export default function RSVP() {
                   <div className="space-y-2">
                     {members.map((m, i) => {
                       const checked = selected.some(
-                        (x) => x.first === m.first && x.last === m.last
+                        (x) => x.first === m.first && x.last === m.last,
                       );
                       return (
                         <label key={i} className="flex items-center">
