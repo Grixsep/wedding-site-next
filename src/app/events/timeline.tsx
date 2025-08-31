@@ -49,7 +49,7 @@ const EVENTS = [
     iconColor: "#e91e63",
   },
   {
-    date: "Mar 11, 2026 2:00 PM",
+    date: "Mar 15, 2026 2:00 PM",
     title: "Farewell Party",
     subtitle: "Location TBD",
     icon: <Celebration />,
