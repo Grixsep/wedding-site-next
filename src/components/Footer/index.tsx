@@ -3,7 +3,14 @@
 const Footer = () => {
   return (
     <>
-      <footer className="relative z-10 bg-white py-36 dark:bg-gray-dark sm:py-36 md:py-16 lg:py-16 body-modal-open:hidden">
+      {/* Global rule: hide footer when body has .modal-open */}
+      <style jsx global>{`
+        body.modal-open .site-footer {
+          display: none !important;
+        }
+      `}</style>
+
+      <footer className="site-footer relative z-10 bg-white py-36 dark:bg-gray-dark sm:py-36 md:py-16 lg:py-16">
         <div className="websites-footer-illustration" />
 
         <div

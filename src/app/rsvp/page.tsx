@@ -12,13 +12,16 @@ function Modal({
   onClose: () => void;
 }) {
   useEffect(() => {
+    // Lock page scroll and mark body as "modal open"
     document.body.classList.add("overflow-hidden");
+    document.body.classList.add("modal-open");
 
-    // Scroll to top when modal opens
+    // Scroll to top when modal opens (helps mobile)
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     return () => {
       document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove("modal-open");
     };
   }, []);
 
@@ -27,9 +30,11 @@ function Modal({
       <div
         role="dialog"
         aria-modal="true"
-        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2"
+        // ↑ ensure we sit above everything (footer is z-10)
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-2"
       >
-        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-2 relative pb-12">
+        {/* Modal panel: cap height, make contents scroll if needed, keep comfy bottom padding */}
+        <div className="bg-white rounded-lg w-full max-w-md mx-2 relative max-h-[min(90vh,40rem)] flex flex-col">
           <button
             onClick={onClose}
             aria-label="Close"
@@ -37,9 +42,15 @@ function Modal({
           >
             ✕
           </button>
-          {children}
+
+          {/* Scrollable content area with extra bottom padding so action buttons remain visible */}
+          <div className="p-6 overflow-auto pb-24 [padding-bottom:calc(env(safe-area-inset-bottom,0)+1.5rem)]">
+            {children}
+          </div>
         </div>
       </div>
+
+      {/* Keep your decorative elements; they’ll be hidden when body has `modal-open` */}
       <div className="block md:hidden mt-16">
         <div className="websiteDecoration websiteDecoration--bottom" />
         <div className="websites-footer-illustration" />
@@ -74,9 +85,22 @@ export default function RSVP() {
   const [diets, setDiets] = useState<Record<string, string>>({}); // ← new
   const [transport, setTransport] = useState(false); // ← new
 
+  function resetSelectionAndPrefs() {
+    // Clear who’s selected and any per-person prefs from a previous search
+    setSelected([]);
+    setMenuChoices({});
+    setDiets({});
+    // Optional: reset these each time too, so new parties start fresh
+    setAttending("Yes");
+    setTransport(false);
+    setShowName(true);
+  }
+
   // 1) search handler
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
+    // Clear prior selections/prefs so this search starts clean
+    resetSelectionAndPrefs();
     const first = query.first.trim().toLowerCase();
     const last = query.last.trim().toLowerCase();
     if (!first && !last) {
