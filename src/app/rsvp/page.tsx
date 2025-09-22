@@ -96,13 +96,29 @@ export default function RSVP() {
     setShowName(true);
   }
 
+  // Accent/diacritic/punctuation folding for name search
+  function foldName(s: string) {
+    return (
+      s
+        .normalize("NFD") // split letters + combining marks
+        .replace(/[\u0300-\u036f]/g, "") // remove combining marks
+        .replace(/đ/g, "d") // Vietnamese special letters
+        .replace(/Đ/g, "D")
+        // optional: treat common punctuation as spaces
+        .replace(/[’'´`-]/g, " ")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ")
+    ); // collapse multiple spaces
+  }
+
   // 1) search handler
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     // Clear prior selections/prefs so this search starts clean
     resetSelectionAndPrefs();
-    const first = query.first.trim().toLowerCase();
-    const last = query.last.trim().toLowerCase();
+    const first = foldName(query.first);
+    const last = foldName(query.last);
     if (!first && !last) {
       toast.error("Enter first or last name");
       return;
@@ -110,7 +126,7 @@ export default function RSVP() {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/rsvp?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`,
+        `/api/rsvp?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`
       );
       const json = await res.json();
       if (json.error) {
@@ -138,7 +154,7 @@ export default function RSVP() {
     setSelected((s) =>
       s.some((x) => x.first === m.first && x.last === m.last)
         ? s.filter((x) => !(x.first === m.first && x.last === m.last))
-        : [...s, m],
+        : [...s, m]
     );
   }
 
@@ -296,7 +312,7 @@ export default function RSVP() {
                   <div className="space-y-2">
                     {members.map((m, i) => {
                       const checked = selected.some(
-                        (x) => x.first === m.first && x.last === m.last,
+                        (x) => x.first === m.first && x.last === m.last
                       );
                       return (
                         <label key={i} className="flex items-center">
