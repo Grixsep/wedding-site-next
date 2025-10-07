@@ -31,7 +31,7 @@ export default function Accommodations() {
       lat: 30.39819,
       lng: -97.71893,
       // remove top choice badge
-      // topChoice: true,
+      topChoice: false,
     },
     {
       name: "Archer Hotel Austin",
@@ -50,6 +50,7 @@ export default function Accommodations() {
       address: "3121 Palm Way, Austin, TX 78758",
       lat: 30.402376,
       lng: -97.721288,
+      topChoice: false,
     },
     {
       name: "The Westin Austin at The Domain",
@@ -69,6 +70,7 @@ export default function Accommodations() {
       address: "11301 Domain Drive, Austin, TX 78758",
       lat: 30.399765,
       lng: -97.725218,
+      topChoice: false,
     },
     {
       name: "Aloft Austin at The Domain",
@@ -88,6 +90,7 @@ export default function Accommodations() {
       address: "11601 Domain Dr, Austin, TX 78758",
       lat: 30.402025,
       lng: -97.726006,
+      topChoice: false,
     },
   ];
 
