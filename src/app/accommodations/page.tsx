@@ -1,61 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import {
-  FaStar,
-  FaStarHalfAlt,
-  FaMapMarkerAlt,
-  FaBed,
-  FaDollarSign,
-  FaCompass,
-} from "react-icons/fa";
-
-// Star Rating Component
-const StarRating = ({ rating }: { rating: number }) => {
-  const stars = [];
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-
-  for (let i = 0; i < fullStars; i++) {
-    stars.push(<FaStar key={`full-${i}`} className="text-yellow-400" />);
-  }
-  if (hasHalfStar) {
-    stars.push(<FaStarHalfAlt key="half" className="text-yellow-400" />);
-  }
-  const emptyStars = 5 - Math.ceil(rating);
-  for (let i = 0; i < emptyStars; i++) {
-    stars.push(<FaStar key={`empty-${i}`} className="text-gray-300" />);
-  }
-
-  return (
-    <div className="flex items-center gap-1">
-      <div className="flex">{stars}</div>
-      <span className="text-sm text-gray-600 ml-1">({rating})</span>
-    </div>
-  );
-};
-
-// Price Level Indicator
-const PriceLevel = ({ level }: { level: 1 | 2 | 3 | 4 }) => {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[...Array(4)].map((_, i) => (
-        <FaDollarSign
-          key={i}
-          className={`text-sm ${i < level ? "text-green-600" : "text-gray-300"}`}
-        />
-      ))}
-    </div>
-  );
-};
+import { FaBed, FaCalendarAlt } from "react-icons/fa";
 
 export default function Accommodations() {
   const [activeHotel, setActiveHotel] = useState(0);
+  const mapRef = useRef<any>(null);
+  const mapInstanceRef = useRef<any>(null);
 
   const hotels = [
+    {
+      name: "Residence Inn by Marriott",
+      tagline: "Austin Northwest/The Domain Area",
+      images: [
+        "/images/accommodations/inn-marriott/1.jpg",
+        "/images/accommodations/inn-marriott/2.jpg",
+        "/images/accommodations/inn-marriott/3.jpg",
+      ],
+      description:
+        "Spacious suites with full kitchens, free hot breakfast, and comfortable living areas. Perfect for extended stays and families needing extra space.",
+      features: ["Free Breakfast", "Full Kitchen", "Free Parking"],
+      price: "$149/night",
+      dates: "March 10-17",
+      bookingLink:
+        "https://www.marriott.com/event-reservations/reservation-link.mi?id=1757626647608&key=GRP&app=resvlink",
+      address: "11301 Burnet Rd, Austin, TX 78758",
+      lat: 30.39819,
+      lng: -97.71893,
+      // remove top choice badge
+      // topChoice: true,
+    },
     {
       name: "Archer Hotel Austin",
       tagline: "Boutique luxury in The Domain",
@@ -66,15 +43,13 @@ export default function Accommodations() {
       ],
       description:
         "Design-forward boutique stay with a lively lobby bar and a small rooftop pool. Steps from Domain restaurants, shops, and nightlife.",
-      features: ["Rooftop Pool", "Lobby Bar", "Pet Friendly", "Valet Parking"],
-      rating: 4.5,
-      priceLevel: 4 as 1 | 2 | 3 | 4,
-      distance: "In The Domain",
-      mapLink: "https://goo.gl/maps/6VaH2i8Bb3Y8x9Gk7",
-      bookingLink: "https://www.archerhotel.com/austin/the-domain",
-      recommended: true, // In the Domain
-      hasHotelBlock: true,
-      blockCode: "LEDEWHURST-WEDDING",
+      features: ["Rooftop Pool", "Lobby Bar", "Valet Parking"],
+      price: "$249/night",
+      dates: "March 12-15",
+      bookingLink: "https://archerhotel.com/austin/book/an-and-paul-wedding",
+      address: "3121 Palm Way, Austin, TX 78758",
+      lat: 30.402376,
+      lng: -97.721288,
     },
     {
       name: "The Westin Austin at The Domain",
@@ -86,21 +61,14 @@ export default function Accommodations() {
       ],
       description:
         "Bright, modern rooms with a relaxing pool and on-site dining. Right by Domain's main strip for quick eats, coffee, and shopping.",
-      features: [
-        "Outdoor Pool",
-        "Fitness Center",
-        "Restaurant & Bar",
-        "Business Center",
-      ],
-      rating: 4.3,
-      priceLevel: 3 as 1 | 2 | 3 | 4,
-      distance: "In The Domain",
-      mapLink: "https://goo.gl/maps/abcd1234",
+      features: ["Outdoor Pool", "Fitness Center", "Restaurant & Bar"],
+      price: "$219/night",
+      dates: "March 13-14",
       bookingLink:
-        "https://www.marriott.com/hotels/travel/auswi-the-westin-austin-at-the-domain/",
-      recommended: true, // In the Domain
-      hasHotelBlock: true,
-      blockCode: "LEDEWHURST-WEDDING",
+        "https://book.passkey.com/event/51119783/owner/3061945/landing",
+      address: "11301 Domain Drive, Austin, TX 78758",
+      lat: 30.399765,
+      lng: -97.725218,
     },
     {
       name: "Aloft Austin at The Domain",
@@ -112,61 +80,145 @@ export default function Accommodations() {
       ],
       description:
         "Trendy hangout with vibrant common spaces, pool, and casual live music. Great for guests who want a fun, youthful vibe.",
-      features: ["Live Music", "Pool", "24/7 Gym", "Pet Friendly"],
-      rating: 4.2,
-      priceLevel: 3 as 1 | 2 | 3 | 4,
-      distance: "In The Domain",
-      mapLink: "https://goo.gl/maps/xyz789",
+      features: ["Pool", "24/7 Gym", "Pet Friendly"],
+      price: "$199/night",
+      dates: "March 12-16",
       bookingLink:
-        "https://www.marriott.com/hotels/travel/ausaa-aloft-austin-domain/",
-      recommended: true, // In the Domain
-      hasHotelBlock: false,
-    },
-    {
-      name: "Hyatt House Austin/Arboretum",
-      tagline: "Suite-style comfort",
-      images: [
-        "/images/accommodations/archer/1.jpg", // TODO: swap to actual Hyatt images
-        "/images/accommodations/archer/2.jpg",
-        "/images/accommodations/archer/3.jpg",
-      ],
-      description:
-        "Spacious suites with kitchenettes, free hot breakfast, and a low-key vibe. A short rideshare to the Domain (good for families).",
-      features: [
-        "Free Breakfast",
-        "Kitchen Suites",
-        "Evening Social",
-        "On-site Laundry",
-      ],
-      rating: 4.0,
-      priceLevel: 2 as 1 | 2 | 3 | 4,
-      distance: "Near The Domain (~8-12 min drive)",
-      mapLink: "https://goo.gl/maps/wxyz5678",
-      bookingLink:
-        "https://www.hyatt.com/en-US/hotel/texas/hyatt-house-austin-arboretum-domain/",
-      hasHotelBlock: true,
-      blockCode: "LEDEWHURST-WEDDING",
-    },
-    {
-      name: "La Quinta Inn & Suites",
-      tagline: "Solid budget option",
-      images: [
-        "/images/accommodations/laquinta/laquinta1.png",
-        "/images/accommodations/laquinta/laquinta2.png",
-        "/images/accommodations/laquinta/laquinta3.png",
-      ],
-      description:
-        "Straightforward and affordable with breakfast included. Good value pick with a small walk to the Domain.",
-      features: ["Free Breakfast", "Pool", "Free Parking", "Pet Friendly"],
-      rating: 3.8,
-      priceLevel: 1 as 1 | 2 | 3 | 4,
-      distance: "Near The Domain (~10-15 min walk)",
-      mapLink: "https://goo.gl/maps/laquinta123",
-      bookingLink: "https://www.lq.com/",
-      nearDomain: true, // New flag
-      hasHotelBlock: false,
+        "https://www.marriott.com/event-reservations/reservation-link.mi?guestreslink2=true&id=1758031700433&key=GRP",
+      address: "11601 Domain Dr, Austin, TX 78758",
+      lat: 30.402025,
+      lng: -97.726006,
     },
   ];
+
+  // Initialize Leaflet map
+  useEffect(() => {
+    // Dynamically load Leaflet CSS and JS
+    const loadLeaflet = async () => {
+      // Load CSS
+      if (!document.getElementById("leaflet-css")) {
+        const link = document.createElement("link");
+        link.id = "leaflet-css";
+        link.rel = "stylesheet";
+        link.href =
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css";
+        document.head.appendChild(link);
+      }
+
+      // Load JS
+      if (!(window as any).L) {
+        await new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js";
+          script.onload = resolve;
+          document.body.appendChild(script);
+        });
+      }
+
+      // Initialize map
+      if (mapRef.current && (window as any).L && !mapInstanceRef.current) {
+        const L = (window as any).L;
+
+        // Create map centered on The Domain
+        const map = L.map(mapRef.current).setView([30.395, -97.72], 14);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors",
+          maxZoom: 19,
+        }).addTo(map);
+
+        // Custom icon for hotels
+        const hotelIcon = L.divIcon({
+          className: "custom-hotel-marker",
+          html: `<div style="background-color: #2563eb; width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 16px;">🏨</div>`,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+          popupAnchor: [0, -16],
+        });
+
+        const topChoiceIcon = L.divIcon({
+          className: "custom-hotel-marker",
+          html: `<div style="background-color: #16a34a; width: 36px; height: 36px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 18px;">⭐</div>`,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
+          popupAnchor: [0, -18],
+        });
+
+        // Add markers for each hotel
+        hotels.forEach((hotel) => {
+          const marker = L.marker([hotel.lat, hotel.lng], {
+            icon: hotel.topChoice ? topChoiceIcon : hotelIcon,
+          }).addTo(map);
+
+          // Create popup content
+          const popupContent = `
+            <div style="min-width: 220px; font-family: system-ui, -apple-system, sans-serif;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937;">
+                  ${hotel.name}
+                </h3>
+                ${hotel.topChoice ? '<span style="font-size: 18px;">⭐</span>' : ""}
+              </div>
+              <p style="margin: 4px 0; font-size: 14px; color: #6b7280;">
+                ${hotel.address}
+              </p>
+              <div style="margin: 8px 0; padding: 8px; background: linear-gradient(to right, #eff6ff, #dbeafe); border-radius: 8px;">
+                <div style="font-size: 20px; font-weight: bold; color: #2563eb;">
+                  ${hotel.price}
+                </div>
+                <div style="font-size: 11px; color: #6b7280; margin-top: 2px;">
+                  (before tax)
+                </div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+                  ${hotel.dates}
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <a 
+                  href="${hotel.bookingLink}" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style="flex: 1; padding: 10px; background: linear-gradient(to right, #2563eb, #1d4ed8); color: white; text-align: center; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s;"
+                  onmouseover="this.style.background='linear-gradient(to right, #1d4ed8, #1e40af)'"
+                  onmouseout="this.style.background='linear-gradient(to right, #2563eb, #1d4ed8)'"
+                >
+                  Book Now
+                </a>
+                <a 
+                  href="https://www.google.com/maps/dir/?api=1&destination=${hotel.lat},${hotel.lng}" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style="flex: 1; padding: 10px; background: white; border: 2px solid #e5e7eb; color: #374151; text-align: center; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s;"
+                  onmouseover="this.style.borderColor='#9ca3af'; this.style.background='#f9fafb'"
+                  onmouseout="this.style.borderColor='#e5e7eb'; this.style.background='white'"
+                >
+                  Directions
+                </a>
+              </div>
+            </div>
+          `;
+
+          marker.bindPopup(popupContent, {
+            maxWidth: 300,
+            className: "hotel-popup",
+          });
+        });
+
+        mapInstanceRef.current = map;
+      }
+    };
+
+    loadLeaflet();
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
 
   // Custom arrow components with better styling
   function SamplePrevArrow(props: any) {
@@ -174,7 +226,7 @@ export default function Accommodations() {
     return (
       <button
         onClick={onClick}
-        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg z-10 transition-all hover:scale-110"
+        className="absolute left-2 top-1/3 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg z-10 transition-all hover:scale-110"
         aria-label="Previous hotel"
       >
         <svg
@@ -199,7 +251,7 @@ export default function Accommodations() {
     return (
       <button
         onClick={onClick}
-        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg z-10 transition-all hover:scale-110"
+        className="absolute right-2 top-1/3 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg z-10 transition-all hover:scale-110"
         aria-label="Next hotel"
       >
         <svg
@@ -225,6 +277,7 @@ export default function Accommodations() {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    swipe: true,
     prevArrow: <SamplePrevArrow />,
     nextArrow: <SampleNextArrow />,
     beforeChange: (current: number, next: number) => setActiveHotel(next),
@@ -236,8 +289,8 @@ export default function Accommodations() {
     ),
     customPaging: (i: number) => (
       <div
-        className={`h-2 rounded-full transition-all ${
-          i === activeHotel ? "bg-blue-600 w-8" : "bg-gray-400 w-2"
+        className={`h-3 rounded-full transition-all cursor-pointer ${
+          i === activeHotel ? "bg-blue-600 w-12" : "bg-gray-400 w-3"
         }`}
       />
     ),
@@ -252,7 +305,6 @@ export default function Accommodations() {
     arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,
-    // no customPaging here – CSS handles the look; avoids misalignment
   };
 
   return (
@@ -272,13 +324,13 @@ export default function Accommodations() {
 
         /* Outer (hotel) dots – bigger gap and consistent pill when active */
         .slick-thumb {
-          margin-top: 16px;
+          margin-top: 20px;
         }
         .slick-thumb li {
-          margin: 0 10px !important;
+          margin: 0 12px !important;
         }
         .slick-thumb li div {
-          height: 8px !important;
+          height: 12px !important;
         }
 
         /* Inner (image) dots – clean alignment */
@@ -301,6 +353,18 @@ export default function Accommodations() {
           border-color: #3b82f6;
           transform: scale(1.25);
         }
+
+        /* Leaflet popup styling */
+        .leaflet-popup-content-wrapper {
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .leaflet-popup-content {
+          margin: 12px;
+        }
+        .leaflet-popup-tip {
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
       `}</style>
 
       <div className="pt-24 sm:pt-32 md:pt-36 lg:pt-40">
@@ -322,10 +386,9 @@ export default function Accommodations() {
                   </h1>
                   <div className="websiteFont__hero websiteLinkChilds websiteLinkChilds--underline pt-0 sm:pt-4 md:pt-10 lg:pt-10">
                     <p>
-                      We've obtained hotel blocks with certain hotels in The
-                      Domain area to ensure you have a comfortable stay. We
-                      recommend staying within or close to the domain if you do
-                      not have a car for your stay.
+                      We've secured special room blocks at hotels in The Domain
+                      area. Book by <strong>February 1st, 2026</strong> to
+                      receive our group rates.
                     </p>
                   </div>
                 </div>
@@ -337,27 +400,17 @@ export default function Accommodations() {
                   {hotels.map((hotel, index) => (
                     <div key={index} className="px-2">
                       <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                        {/* Image Carousel with 3D border effect */}
+                        {/* Image Carousel */}
                         <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden bg-gray-100">
-                          {/* Hotel Badges */}
-                          <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
-                            {hotel.recommended && (
-                              <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                                ⭐ In the Domain
+                          {/* Top Choice Badge */}
+                          {hotel.topChoice && (
+                            <div className="absolute top-4 left-4 z-20">
+                              <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
+                                <span className="text-lg">⭐</span>
+                                <span>Best Value - Top Choice</span>
                               </div>
-                            )}
-                            {hotel.nearDomain && (
-                              <div className="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                                <FaCompass className="opacity-90" />
-                                <span>Near The Domain</span>
-                              </div>
-                            )}
-                            {hotel.hasHotelBlock && (
-                              <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                                🏨 Hotel Block Available
-                              </div>
-                            )}
-                          </div>
+                            </div>
+                          )}
 
                           <div className="absolute inset-2 bg-white rounded-lg shadow-inner hotel-image-carousel">
                             <Slider
@@ -384,17 +437,31 @@ export default function Accommodations() {
                         <div className="p-6 sm:p-8">
                           {/* Header Section */}
                           <div className="mb-4">
-                            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">
-                              {hotel.name}
-                            </h2>
-                            <p className="text-gray-600 italic">
-                              {hotel.tagline}
-                            </p>
+                            <div className="flex items-start justify-between gap-4 mb-2">
+                              <div>
+                                <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">
+                                  {hotel.name}
+                                </h2>
+                                <p className="text-gray-600 italic">
+                                  {hotel.tagline}
+                                </p>
+                              </div>
+                              <div className="text-right flex-shrink-0">
+                                <div className="text-3xl font-bold text-blue-600">
+                                  {hotel.price}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  group rate (before tax)
+                                </div>
+                              </div>
+                            </div>
 
-                            {/* Rating and Price */}
-                            <div className="flex items-center justify-between mt-3">
-                              <StarRating rating={hotel.rating} />
-                              <PriceLevel level={hotel.priceLevel} />
+                            {/* Availability Dates */}
+                            <div className="flex items-center text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg inline-flex gap-2 mt-2">
+                              <FaCalendarAlt className="text-blue-500" />
+                              <span>
+                                <strong>Available:</strong> {hotel.dates}
+                              </span>
                             </div>
                           </div>
 
@@ -403,55 +470,106 @@ export default function Accommodations() {
                             {hotel.description}
                           </p>
 
-                          {/* Distance Badge */}
-                          <div className="flex items-center text-sm text-gray-600 mb-4">
-                            <FaMapMarkerAlt className="mr-2 text-red-500" />
-                            <span>{hotel.distance}</span>
-                          </div>
-
                           {/* Features */}
                           <div className="flex flex-wrap gap-2 mb-6">
                             {hotel.features.map((feature, idx) => (
                               <span
                                 key={idx}
-                                className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                                className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium"
                               >
                                 {feature}
                               </span>
                             ))}
                           </div>
 
-                          {/* Action Buttons */}
-                          <div className="flex flex-col sm:flex-row gap-3">
-                            <a
-                              href={hotel.bookingLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 shadow-md"
-                            >
-                              <FaBed />
-                              <span className="font-semibold">Book Now</span>
-                            </a>
-                            <a
-                              href={hotel.mapLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all"
-                            >
-                              <FaMapMarkerAlt />
-                              <span className="font-semibold">View Map</span>
-                            </a>
-                          </div>
+                          {/* Address */}
+                          <p className="text-sm text-gray-500 mb-4">
+                            {hotel.address}
+                          </p>
+
+                          {/* Action Button */}
+                          <a
+                            href={hotel.bookingLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 shadow-md"
+                          >
+                            <FaBed className="text-xl" />
+                            <span className="font-semibold text-lg">
+                              Book Your Stay
+                            </span>
+                          </a>
                         </div>
                       </div>
                     </div>
                   ))}
                 </Slider>
 
-                {/* Hotel Navigation Dots Info */}
+                {/* Hotel Navigation Info */}
                 <div className="text-center mt-8 text-sm text-gray-500">
                   Swipe or use arrows to browse all {hotels.length} hotel
                   options
+                </div>
+              </div>
+
+              {/* Map Section */}
+              <div className="max-w-6xl mx-auto px-4 mb-12">
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden p-6 sm:p-8">
+                  <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                    Hotel Locations Map
+                  </h2>
+
+                  {/* Leaflet Map */}
+                  <div
+                    ref={mapRef}
+                    className="relative w-full h-96 mb-6 rounded-lg overflow-hidden shadow-md"
+                    style={{ zIndex: 1 }}
+                  />
+
+                  {/* Hotel Quick Links */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {hotels.map((hotel, index) => (
+                      <a
+                        key={index}
+                        href={hotel.bookingLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group bg-gradient-to-br from-blue-50 to-white border-2 border-blue-100 rounded-lg p-4 hover:border-blue-400 hover:shadow-lg transition-all transform hover:scale-105"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-bold text-gray-800 text-sm group-hover:text-blue-600 transition-colors">
+                            {hotel.name}
+                          </h3>
+                          {hotel.topChoice && (
+                            <span className="text-lg">⭐</span>
+                          )}
+                        </div>
+                        <div className="text-2xl font-bold text-blue-600 mb-1">
+                          {hotel.price}
+                        </div>
+                        <div className="text-xs text-gray-500 mb-3">
+                          {hotel.dates} · before tax
+                        </div>
+                        <div className="flex items-center gap-2 text-blue-600 text-sm font-semibold">
+                          <FaBed />
+                          <span>Book Now</span>
+                          <svg
+                            className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -462,26 +580,28 @@ export default function Accommodations() {
                     🚌 Shuttle Service Information
                   </h3>
                   <p className="text-blue-800">
-                    Complimentary shuttle service will be provided from all
-                    listed hotels to the venue. Shuttles will depart 45 minutes
-                    before the ceremony and return service will be available
-                    throughout the evening until 11:30 PM.
+                    Complimentary shuttle service will be provided on the
+                    wedding day from a central pickup point in The Domain area.
+                    The shuttle will depart 45 minutes before the ceremony and
+                    return service will be available at the end of the night.
+                    Exact pickup location details will be sent to guests closer
+                    to the wedding date.
                   </p>
                 </div>
 
                 <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
                   <h3 className="text-lg font-semibold text-green-900 mb-2">
-                    💰 Hotel Block Discounts Available
+                    💰 Important Booking Information
                   </h3>
                   <p className="text-green-800 mb-3">
-                    We've secured discounted room blocks at The Archer Hotel,
-                    The Westin, and Hyatt House. Please book by{" "}
-                    <strong>February 14, 2026</strong> to receive our special
-                    group rate.
+                    Please book by <strong>February 1st, 2026</strong> to
+                    receive our special group rates shown above. After this
+                    date, rooms will be subject to availability and standard
+                    pricing.
                   </p>
                   <p className="text-green-700 text-sm">
-                    <strong>Booking Code:</strong> LEDEWHURST-WEDDING (mention
-                    when calling or use online)
+                    Click "Book Your Stay" on any hotel above to access our
+                    special group booking page.
                   </p>
                 </div>
               </div>
