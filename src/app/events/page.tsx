@@ -2,7 +2,6 @@
 
 import "react-vertical-timeline-component/style.min.css";
 import Demo, { EVENTS } from "./timeline";
-import CalendarActions from "./CalendarActions";
 import CalendarMonth from "./CalendarMonth";
 
 export default function Events() {
