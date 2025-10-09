@@ -1,7 +1,9 @@
 "use client";
 
 import "react-vertical-timeline-component/style.min.css";
-import Demo from "./timeline";
+import Demo, { EVENTS } from "./timeline";
+import CalendarActions from "./CalendarActions";
+import CalendarMonth from "./CalendarMonth";
 
 export default function Events() {
   return (
@@ -37,6 +39,16 @@ export default function Events() {
 
             {/* Vertical Timeline */}
             <Demo />
+
+            {/* Month grid calendar (March 2026 in your case) */}
+            <div className="websiteContainerSection">
+              <CalendarMonth events={EVENTS} year={2026} month={3} />
+            </div>
+
+            {/* (Optional) Keep the list-style add-to-calendar section too */}
+            {/* <div className="websiteContainerSection">
+              <CalendarActions events={EVENTS} />
+            </div> */}
           </div>
         </div>
       </div>

@@ -20,7 +20,18 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import RoomIcon from "@mui/icons-material/Room";
 import Celebration from "@mui/icons-material/Celebration";
 
-const EVENTS = [
+export type EventItem = {
+  date: string;
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  link: string;
+  iconBg: string;
+  iconColor: string;
+  end?: string; // ⬅️ optional end time (e.g., "Mar 14, 2026 11:30 PM")
+};
+
+export const EVENTS: EventItem[] = [
   {
     date: "Mar 8, 2026 10:00 AM",
     title: "Tea Ceremony",
@@ -31,7 +42,7 @@ const EVENTS = [
     iconColor: "#f57f17",
   },
   {
-    date: "Mar 11, 2026 6:00 PM",
+    date: "Mar 12, 2026 6:00 PM",
     title: "Welcome Party",
     subtitle: "Location TBD",
     icon: <MusicNoteIcon />,
