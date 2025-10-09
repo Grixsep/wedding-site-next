@@ -1,4 +1,4 @@
-// src/app/photos/[category]/page.tsx
+// app/photos/[category]/page.tsx
 import ClientGallery from "./ClientGallery";
 
 export default async function CategoryPage({
@@ -6,7 +6,7 @@ export default async function CategoryPage({
 }: {
   params: Promise<{ category: string }>;
 }) {
-  // Next13 now gives you a Promise-style params
+  // Next.js 13+ gives you a Promise-style params
   const { category } = await params;
 
   return <ClientGallery category={category} />;

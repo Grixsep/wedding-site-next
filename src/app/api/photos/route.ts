@@ -1,34 +1,43 @@
-import { v2 as cloudinary } from "cloudinary";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
-  api_key: process.env.CLOUDINARY_API_KEY!,
-  api_secret: process.env.CLOUDINARY_API_SECRET!,
-});
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const tag = searchParams.get("category") || "";
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const category = searchParams.get("category") || "ceremony";
   const cursor = parseInt(searchParams.get("photoCursor") || "0", 10);
-  const pageSize = 10;
+  const pageSize = 20; // Load 20 images at a time
+
+  const photosDir = path.join(
+    process.cwd(),
+    "public",
+    "images",
+    "photos",
+    category,
+  );
 
   try {
-    const result = await cloudinary.api.resources_by_tag(tag, {
-      max_results: 500,
-    });
+    // Check if directory exists
+    if (!fs.existsSync(photosDir)) {
+      return NextResponse.json({ page: [], next: null });
+    }
 
-    const all = result.resources
-      .sort((a: any, b: any) => a.public_id.localeCompare(b.public_id)) // Sort by name
-      .map((r: any) => ({ url: r.secure_url }));
+    const files = fs.readdirSync(photosDir);
+    const imageFiles = files
+      .filter((file) => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
+      .sort(); // Sort alphabetically for consistent ordering
 
-    const page = all.slice(cursor, cursor + pageSize);
+    // Paginate results
+    const page = imageFiles.slice(cursor, cursor + pageSize).map((file) => ({
+      url: `/images/photos/${category}/${file}`,
+    }));
+
     const next =
-      cursor + page.length < all.length ? cursor + page.length : null;
+      cursor + pageSize < imageFiles.length ? cursor + pageSize : null;
 
     return NextResponse.json({ page, next });
-  } catch (e) {
-    console.error("Cloudinary Admin API error:", e);
+  } catch (error) {
+    console.error("Error reading photos directory:", error);
     return NextResponse.json({ page: [], next: null });
   }
 }

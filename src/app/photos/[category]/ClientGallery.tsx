@@ -40,24 +40,22 @@ export default function ClientGallery({ category }: { category: string }) {
           dataLength={photos.length}
           next={loadMore}
           hasMore={hasMore}
-          loader={<h4 className="text-center mt-4">Loading…</h4>}
+          loader={<h4 className="text-center mt-4">Loading...</h4>}
           scrollableTarget="scrollMobile"
         >
-          <div className="columns-2 sm:columns-3 md:columns-3 gap-2 space-y-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2">
             {photos.map((p, i) => (
               <div
                 key={i}
-                className="break-inside-avoid overflow-hidden rounded cursor-pointer"
+                className="overflow-hidden rounded cursor-pointer aspect-square"
                 onClick={() => setSelectedIndex(i)}
               >
                 <Image
                   src={p.url}
                   alt={`Photo ${i + 1}`}
                   width={800}
-                  height={600}
-                  layout="responsive"
-                  objectFit="cover"
-                  className="rounded"
+                  height={800}
+                  className="rounded object-cover w-full h-full"
                 />
               </div>
             ))}

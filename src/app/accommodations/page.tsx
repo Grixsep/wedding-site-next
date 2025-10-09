@@ -30,7 +30,6 @@ export default function Accommodations() {
       address: "11301 Burnet Rd, Austin, TX 78758",
       lat: 30.39819,
       lng: -97.71893,
-      // remove top choice badge
       topChoice: false,
     },
     {
@@ -229,7 +228,7 @@ export default function Accommodations() {
     return (
       <button
         onClick={onClick}
-        className="absolute left-2 top-1/3 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg z-10 transition-all hover:scale-110"
+        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white text-gray-800 hover:text-gray-900 p-3 rounded-full shadow-xl hover:shadow-2xl z-10 transition-all hover:scale-110"
         aria-label="Previous hotel"
       >
         <svg
@@ -254,7 +253,7 @@ export default function Accommodations() {
     return (
       <button
         onClick={onClick}
-        className="absolute right-2 top-1/3 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg z-10 transition-all hover:scale-110"
+        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white text-gray-800 hover:text-gray-900 p-3 rounded-full shadow-xl hover:shadow-2xl z-10 transition-all hover:scale-110"
         aria-label="Next hotel"
       >
         <svg
@@ -274,13 +273,64 @@ export default function Accommodations() {
     );
   }
 
+  // Inner carousel arrow components - large tap areas for mobile, subtle design
+  function InnerPrevArrow(props: any) {
+    const { onClick } = props;
+    return (
+      <button
+        onClick={onClick}
+        className="absolute left-0 top-0 h-full w-1/4 z-20 flex items-center justify-start pl-3 transition-all group"
+        aria-label="Previous image"
+      >
+        <svg
+          className="w-8 h-8 text-white opacity-40 group-hover:opacity-80 drop-shadow-lg transition-all group-hover:scale-110"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={3}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+    );
+  }
+
+  function InnerNextArrow(props: any) {
+    const { onClick } = props;
+    return (
+      <button
+        onClick={onClick}
+        className="absolute right-0 top-0 h-full w-1/4 z-20 flex items-center justify-end pr-3 transition-all group"
+        aria-label="Next image"
+      >
+        <svg
+          className="w-8 h-8 text-white opacity-40 group-hover:opacity-80 drop-shadow-lg transition-all group-hover:scale-110"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={3}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+    );
+  }
+
   const outerSliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    swipe: true,
+    swipe: true, // Re-enable swipe on outer carousel
     prevArrow: <SamplePrevArrow />,
     nextArrow: <SampleNextArrow />,
     beforeChange: (current: number, next: number) => setActiveHotel(next),
@@ -305,7 +355,12 @@ export default function Accommodations() {
     speed: 400,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: false,
+    arrows: true,
+    prevArrow: <InnerPrevArrow />,
+    nextArrow: <InnerNextArrow />,
+    swipe: true, // Enable swipe on inner carousel
+    swipeToSlide: true,
+    touchThreshold: 10,
     autoplay: true,
     autoplaySpeed: 3000,
   };
@@ -398,10 +453,10 @@ export default function Accommodations() {
               </div>
 
               {/* Hotel Carousel */}
-              <div className="max-w-5xl mx-auto mt-12 mb-16 px-4">
+              <div className="lg:max-w-5xl lg:mx-auto mt-12 mb-16">
                 <Slider {...outerSliderSettings}>
                   {hotels.map((hotel, index) => (
-                    <div key={index} className="px-2">
+                    <div key={index} className="lg:px-2">
                       <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                         {/* Image Carousel */}
                         <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden bg-gray-100">
@@ -415,7 +470,13 @@ export default function Accommodations() {
                             </div>
                           )}
 
-                          <div className="absolute inset-2 bg-white rounded-lg shadow-inner hotel-image-carousel">
+                          <div
+                            className="absolute inset-2 bg-white rounded-lg shadow-inner hotel-image-carousel"
+                            onTouchStart={(e) => e.stopPropagation()}
+                            onTouchMove={(e) => e.stopPropagation()}
+                            onTouchEnd={(e) => e.stopPropagation()}
+                            onMouseDown={(e) => e.stopPropagation()}
+                          >
                             <Slider
                               {...innerSliderSettings}
                               key={`slider-${index}`}
@@ -510,8 +571,8 @@ export default function Accommodations() {
 
                 {/* Hotel Navigation Info */}
                 <div className="text-center mt-8 text-sm text-gray-500">
-                  Swipe or use arrows to browse all {hotels.length} hotel
-                  options
+                  Swipe, use arrows, or tap dots to browse all {hotels.length}{" "}
+                  hotel options
                 </div>
               </div>
 

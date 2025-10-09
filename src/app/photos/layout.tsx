@@ -5,11 +5,10 @@ import { usePathname } from "next/navigation";
 
 const CATS = [
   { key: "ceremony", label: "Ceremony" },
-  { key: "official", label: "Official Photos" },
   { key: "elopement", label: "Elopement" },
-  { key: "picnic", label: "Picnic" },
-  { key: "house-party", label: "House Party" },
-  { key: "brunch", label: "Brunch" },
+  { key: "welcome", label: "Welcome Party" },
+  { key: "tea-ceremony", label: "Tea Ceremony" },
+  { key: "farewell", label: "Farewell Party" },
 ];
 
 export default function PhotosLayout({
