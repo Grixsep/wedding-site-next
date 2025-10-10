@@ -82,6 +82,7 @@ export default function RSVP() {
   const [diets, setDiets] = useState<Record<string, string>>({});
   const [transport, setTransport] = useState(false);
   const [guestList, setGuestList] = useState<GuestListEntry[]>([]);
+  const [guestLoading, setGuestLoading] = useState(true);
 
   // New state for events
   const [events, setEvents] = useState({
@@ -97,6 +98,7 @@ export default function RSVP() {
 
   async function fetchGuestList() {
     try {
+      setGuestLoading(true); // ← start
       const res = await fetch("/api/rsvp/guestlist");
       if (res.ok) {
         const data = await res.json();
@@ -104,6 +106,8 @@ export default function RSVP() {
       }
     } catch (error) {
       console.error("Failed to fetch guest list:", error);
+    } finally {
+      setGuestLoading(false); // ← end
     }
   }
 
@@ -118,6 +122,15 @@ export default function RSVP() {
       welcomeParty: false,
       farewellParty: false,
     });
+  }
+
+  function Spinner({ label = "Loading..." }: { label?: string }) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-gray-600" />
+        <p className="mt-3 text-sm text-gray-600">{label}</p>
+      </div>
+    );
   }
 
   function foldName(s: string) {
@@ -696,60 +709,69 @@ export default function RSVP() {
                   Guest List
                 </h2>
 
-                {attendingHouseholds.length > 0 && (
-                  <div className="mb-8">
-                    <h3 className="text-lg font-semibold mb-4 text-green-600">
-                      Attending ({totalAttending})
-                    </h3>
-                    <div className="space-y-4">
-                      {attendingHouseholds.map((household, i) => (
-                        <div
-                          key={i}
-                          className="border-l-4 border-green-500 pl-4 py-2"
-                        >
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                            {household.guests.map((guest, j) => (
-                              <div key={j} className="text-sm">
-                                {guest.name}
+                {guestLoading ? (
+                  <Spinner label="Loading guest list…" />
+                ) : (
+                  <>
+                    {attendingHouseholds.length > 0 && (
+                      <div className="mb-8">
+                        <h3 className="text-lg font-semibold mb-4 text-green-600">
+                          Attending ({totalAttending})
+                        </h3>
+                        <div className="space-y-4">
+                          {attendingHouseholds.map((household, i) => (
+                            <div
+                              key={i}
+                              className="border-l-4 border-green-500 pl-4 py-2"
+                            >
+                              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                                {household.guests.map((guest, j) => (
+                                  <div key={j} className="text-sm">
+                                    {guest.name}
+                                  </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                      </div>
+                    )}
 
-                {notAttendingHouseholds.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4 text-gray-500">
-                      Unable to Attend ({totalNotAttending})
-                    </h3>
-                    <div className="space-y-4">
-                      {notAttendingHouseholds.map((household, i) => (
-                        <div
-                          key={i}
-                          className="border-l-4 border-gray-300 pl-4 py-2"
-                        >
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                            {household.guests.map((guest, j) => (
-                              <div key={j} className="text-sm text-gray-500">
-                                {guest.name}
+                    {notAttendingHouseholds.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4 text-gray-500">
+                          Unable to Attend ({totalNotAttending})
+                        </h3>
+                        <div className="space-y-4">
+                          {notAttendingHouseholds.map((household, i) => (
+                            <div
+                              key={i}
+                              className="border-l-4 border-gray-300 pl-4 py-2"
+                            >
+                              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                                {household.guests.map((guest, j) => (
+                                  <div
+                                    key={j}
+                                    className="text-sm text-gray-500"
+                                  >
+                                    {guest.name}
+                                  </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                      </div>
+                    )}
 
-                {attendingHouseholds.length === 0 &&
-                  notAttendingHouseholds.length === 0 && (
-                    <p className="text-center text-gray-500">
-                      No RSVPs yet. Be the first to RSVP!
-                    </p>
-                  )}
+                    {attendingHouseholds.length === 0 &&
+                      notAttendingHouseholds.length === 0 && (
+                        <p className="text-center text-gray-500">
+                          No RSVPs yet. Be the first to RSVP!
+                        </p>
+                      )}
+                  </>
+                )}
               </div>
             </div>
           </div>

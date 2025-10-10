@@ -52,7 +52,7 @@ export default function PhotosLayout({
               </div>
             </div>
             {/* This needs to be updated / removed but a gap added */}
-            <hr className="hrSection" />
+            <div className="mb-6" />
 
             {/* Tabs */}
             <div className="flex flex-wrap justify-center gap-2 mb-6">

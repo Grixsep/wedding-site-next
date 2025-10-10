@@ -14,9 +14,7 @@ export default function Home() {
       <div className="websiteHomeContentHeader app-contrast-color">
         <div className="websiteDecoration websiteDecoration--top" />
         <div className="websiteHomeContentHeader__contentPanel">
-          <p className="websiteHomeContentHeader__claim">
-            We are getting married!
-          </p>
+          <p className="websiteHomeContentHeader__claim">Celebrate with us!</p>
           <p className="websiteHomeContentHeader__weddingDate websiteFont__heading3">
             March 14, 2026
           </p>
