@@ -12,11 +12,8 @@ function Modal({
   onClose: () => void;
 }) {
   useEffect(() => {
-    // Lock page scroll and mark body as "modal open"
     document.body.classList.add("overflow-hidden");
     document.body.classList.add("modal-open");
-
-    // Scroll to top when modal opens (helps mobile)
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     return () => {
@@ -30,10 +27,8 @@ function Modal({
       <div
         role="dialog"
         aria-modal="true"
-        // ↑ ensure we sit above everything (footer is z-10)
         className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-2"
       >
-        {/* Modal panel: cap height, make contents scroll if needed, keep comfy bottom padding */}
         <div className="bg-white rounded-lg w-full max-w-md mx-2 relative max-h-[min(90vh,40rem)] flex flex-col">
           <button
             onClick={onClose}
@@ -42,15 +37,11 @@ function Modal({
           >
             ✕
           </button>
-
-          {/* Scrollable content area with extra bottom padding so action buttons remain visible */}
           <div className="p-6 overflow-auto pb-24 [padding-bottom:calc(env(safe-area-inset-bottom,0)+1.5rem)]">
             {children}
           </div>
         </div>
       </div>
-
-      {/* Keep your decorative elements; they’ll be hidden when body has `modal-open` */}
       <div className="block md:hidden mt-16">
         <div className="websiteDecoration websiteDecoration--bottom" />
         <div className="websites-footer-illustration" />
@@ -60,62 +51,89 @@ function Modal({
 }
 
 type Member = { first: string; last: string; plus_one: string };
+type GuestListEntry = {
+  name: string;
+  attending: boolean;
+  household: string;
+  timestamp: string;
+};
 
 export default function RSVP() {
   const [step, setStep] = useState<
     | "search"
     | "select"
     | "attend"
-    | "menu" // ← new
-    | "dietary" // ← new
-    | "final" // ← new
+    | "events"
+    | "menu"
+    | "dietary"
+    | "final"
     | "done"
   >("search");
+
   const [query, setQuery] = useState({ first: "", last: "" });
   const [household, setHousehold] = useState("");
   const [members, setMembers] = useState<Member[]>([]);
   const [selected, setSelected] = useState<Member[]>([]);
   const [attending, setAttending] = useState<"Yes" | "No">("Yes");
-  const [showName, setShowName] = useState(true);
   const [loading, setLoading] = useState(false);
-  // per-person menu choices and dietary maps, plus global transport flag
   const [menuChoices, setMenuChoices] = useState<
     Record<string, "1" | "2" | "3">
-  >({}); // ← new
-  const [diets, setDiets] = useState<Record<string, string>>({}); // ← new
-  const [transport, setTransport] = useState(false); // ← new
+  >({});
+  const [diets, setDiets] = useState<Record<string, string>>({});
+  const [transport, setTransport] = useState(false);
+  const [guestList, setGuestList] = useState<GuestListEntry[]>([]);
+
+  // New state for events
+  const [events, setEvents] = useState({
+    teaCeremony: false,
+    welcomeParty: false,
+    farewellParty: false,
+  });
+
+  // Fetch guest list on mount
+  useEffect(() => {
+    fetchGuestList();
+  }, []);
+
+  async function fetchGuestList() {
+    try {
+      const res = await fetch("/api/rsvp/guestlist");
+      if (res.ok) {
+        const data = await res.json();
+        setGuestList(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch guest list:", error);
+    }
+  }
 
   function resetSelectionAndPrefs() {
-    // Clear who’s selected and any per-person prefs from a previous search
     setSelected([]);
     setMenuChoices({});
     setDiets({});
-    // Optional: reset these each time too, so new parties start fresh
     setAttending("Yes");
     setTransport(false);
-    setShowName(true);
+    setEvents({
+      teaCeremony: false,
+      welcomeParty: false,
+      farewellParty: false,
+    });
   }
 
-  // Accent/diacritic/punctuation folding for name search
   function foldName(s: string) {
-    return (
-      s
-        .normalize("NFD") // split letters + combining marks
-        .replace(/[\u0300-\u036f]/g, "") // remove combining marks
-        .replace(/đ/g, "d") // Vietnamese special letters
-        .replace(/Đ/g, "D")
-        // optional: treat common punctuation as spaces
-        .replace(/[’'´`-]/g, " ")
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, " ")
-    ); // collapse multiple spaces
+    return s
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .replace(/[''´`-]/g, " ")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, " ");
   }
 
-  // 1) search handler
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    // Clear prior selections/prefs so this search starts clean
     resetSelectionAndPrefs();
     const first = foldName(query.first);
     const last = foldName(query.last);
@@ -143,13 +161,12 @@ export default function RSVP() {
         }
       }
     } catch {
-      toast.error("Network error — please try again.");
+      toast.error("Network error – please try again.");
     } finally {
       setLoading(false);
     }
   }
 
-  // toggle household members
   function toggleMember(m: Member) {
     setSelected((s) =>
       s.some((x) => x.first === m.first && x.last === m.last)
@@ -158,20 +175,18 @@ export default function RSVP() {
     );
   }
 
-  // whenever the selected array changes, seed menuChoices and diets
   useEffect(() => {
     const m: Record<string, "1" | "2" | "3"> = {};
     const d: Record<string, string> = {};
     selected.forEach((p) => {
       const key = `${p.first}-${p.last}`;
-      m[key] = menuChoices[key] || ""; // blank until chosen
-      d[key] = diets[key] || ""; // blank until typed
+      m[key] = menuChoices[key] || "";
+      d[key] = diets[key] || "";
     });
     setMenuChoices(m);
     setDiets(d);
   }, [selected]);
 
-  // final submit
   async function handleSubmit() {
     if (selected.length === 0) {
       toast.error("Select at least one person");
@@ -186,32 +201,85 @@ export default function RSVP() {
           household,
           selected,
           attending,
-          show_name: showName ? "Yes" : "No",
-          menu: menuChoices, // ← all menu picks
-          dietary: diets, // ← all dietary inputs
+          menu: menuChoices,
+          dietary: diets,
           transport: transport ? "Yes" : "No",
+          events: {
+            teaCeremony: events.teaCeremony ? "Yes" : "No",
+            welcomeParty: events.welcomeParty ? "Yes" : "No",
+            farewellParty: events.farewellParty ? "Yes" : "No",
+          },
         }),
       });
       toast.success("RSVP recorded! 🎉");
+      await fetchGuestList(); // Refresh guest list
       setStep("done");
     } catch {
-      toast.error("Network error — please try again.");
+      toast.error("Network error – please try again.");
     } finally {
       setLoading(false);
     }
   }
 
+  // Process guest list for display - grouped by household, ordered by timestamp (newest first)
+  const groupByHousehold = (guests: GuestListEntry[]) => {
+    const grouped = new Map<
+      string,
+      { guests: GuestListEntry[]; timestamp: string }
+    >();
+
+    guests.forEach((guest) => {
+      if (!grouped.has(guest.household)) {
+        grouped.set(guest.household, {
+          guests: [],
+          timestamp: guest.timestamp,
+        });
+      }
+      grouped.get(guest.household)!.guests.push(guest);
+    });
+
+    // Sort households by timestamp (newest first)
+    return Array.from(grouped.entries())
+      .sort(
+        (a, b) =>
+          new Date(b[1].timestamp).getTime() -
+          new Date(a[1].timestamp).getTime(),
+      )
+      .map(([household, data]) => ({
+        household,
+        guests: data.guests.sort((a, b) => a.name.localeCompare(b.name)),
+        timestamp: data.timestamp,
+      }));
+  };
+
+  const attendingHouseholds = groupByHousehold(
+    guestList.filter((g) => g.attending),
+  );
+  const notAttendingHouseholds = groupByHousehold(
+    guestList.filter((g) => !g.attending),
+  );
+
+  const totalAttending = attendingHouseholds.reduce(
+    (sum, h) => sum + h.guests.length,
+    0,
+  );
+  const totalNotAttending = notAttendingHouseholds.reduce(
+    (sum, h) => sum + h.guests.length,
+    0,
+  );
+
   return (
     <>
-      {/* Decorations */}
-      <style jsx>{`
-        .websiteDecoration--internal {
-          background-image: url("/images/wedding/floral1.png");
-        }
-        .websiteDecoration--bottom {
-          background-image: url("/images/wedding/floral2.png");
-        }
-      `}</style>
+      <style>
+        {`
+          .websiteDecoration--internal {
+            background-image: url("/images/wedding/floral1.png");
+          }
+          .websiteDecoration--bottom {
+            background-image: url("/images/wedding/floral2.png");
+          }
+        `}
+      </style>
 
       <div className="websiteDecoration websiteDecoration--internal" />
       <div className="pt-16 sm:pt-20 md:pt-24 lg:pt-28">
@@ -245,7 +313,6 @@ export default function RSVP() {
                   className="websiteContainerSection mt30"
                 >
                   <div className="pure-g row space-y-4">
-                    {/* First Name */}
                     <div className="pure-u-1-2">
                       <input
                         className="w-full p-4 border-2 border-gray-300 rounded-lg text-lg placeholder-gray-500 focus:border-blue-500 focus:outline-none"
@@ -259,8 +326,6 @@ export default function RSVP() {
                         }
                       />
                     </div>
-
-                    {/* Last Name */}
                     <div className="pure-u-1-2">
                       <input
                         className="w-full p-4 border-2 border-gray-300 rounded-lg text-lg placeholder-gray-500 focus:border-blue-500 focus:outline-none"
@@ -343,7 +408,9 @@ export default function RSVP() {
                     members.length > 1 ? setStep("select") : setStep("search")
                   }
                 >
-                  <h2 className="text-xl mb-4">Will your party attend?</h2>
+                  <h2 className="text-xl mb-4">
+                    Will your party attend the wedding?
+                  </h2>
                   <div className="flex space-x-4 mb-4">
                     <label className="flex items-center space-x-1">
                       <input
@@ -365,22 +432,128 @@ export default function RSVP() {
                     </label>
                   </div>
                   <button
-                    onClick={
-                      () =>
-                        attending === "No" ? handleSubmit() : setStep("menu") // ← new
+                    onClick={() =>
+                      attending === "No" ? handleSubmit() : setStep("events")
                     }
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    disabled={loading}
+                    className={`px-4 py-2 rounded transition ${
+                      loading
+                        ? "bg-blue-200 text-gray-600 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`}
                   >
-                    {attending === "No" ? "Confirm RSVP" : "Next"}
+                    {loading && attending === "No"
+                      ? "Submitting…"
+                      : attending === "No"
+                        ? "Confirm RSVP"
+                        : "Next"}
+                  </button>
+                </Modal>
+              )}
+
+              {/* Events Selection Modal */}
+              {step === "events" && (
+                <Modal onClose={() => setStep("attend")}>
+                  <h2 className="text-2xl font-semibold mb-3">
+                    Which events will you attend?
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    In addition to the wedding, select any other events you'd
+                    like to join.
+                  </p>
+                  <a
+                    href="/events"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 px-3 py-1.5 text-sm rounded-md border border-gray-300 hover:bg-gray-50 mb-6 inline-block"
+                  >
+                    View all events ↗
+                  </a>
+
+                  <div className="space-y-3">
+                    {/* Item */}
+                    <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                      <input
+                        type="checkbox"
+                        className="mt-1 h-5 w-5"
+                        checked={events.teaCeremony}
+                        onChange={(e) =>
+                          setEvents({
+                            ...events,
+                            teaCeremony: e.target.checked,
+                          })
+                        }
+                      />
+                      <div className="leading-6 ml-5">
+                        <span className="font-semibold block">
+                          Tea Ceremony
+                        </span>
+                        <p className="text-sm text-gray-600">
+                          Traditional tea ceremony — Sunday morning
+                        </p>
+                      </div>
+                    </label>
+
+                    {/* Item */}
+                    <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                      <input
+                        type="checkbox"
+                        className="mt-1 h-5 w-5"
+                        checked={events.welcomeParty}
+                        onChange={(e) =>
+                          setEvents({
+                            ...events,
+                            welcomeParty: e.target.checked,
+                          })
+                        }
+                      />
+                      <div className="leading-6 ml-3">
+                        <span className="font-semibold block">
+                          Welcome Party
+                        </span>
+                        <p className="text-sm text-gray-600">
+                          Casual welcome gathering — Thursday evening
+                        </p>
+                      </div>
+                    </label>
+
+                    {/* Item */}
+                    <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                      <input
+                        type="checkbox"
+                        className="mt-1 h-5 w-5"
+                        checked={events.farewellParty}
+                        onChange={(e) =>
+                          setEvents({
+                            ...events,
+                            farewellParty: e.target.checked,
+                          })
+                        }
+                      />
+                      <div className="leading-6 ml-10">
+                        <span className="font-semibold block">
+                          Farewell Party
+                        </span>
+                        <p className="text-sm text-gray-600">
+                          Final gathering — Sunday afternoon
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+
+                  <button
+                    onClick={() => setStep("menu")}
+                    className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                  >
+                    Next
                   </button>
                 </Modal>
               )}
 
               {/* Menu Selection Modal */}
               {step === "menu" && (
-                <Modal onClose={() => setStep("attend")}>
+                <Modal onClose={() => setStep("events")}>
                   <h2 className="text-xl mb-4">Choose a main course</h2>
-                  {/* View full menu link (new tab) */}
                   <a
                     href="/menu"
                     target="_blank"
@@ -389,6 +562,7 @@ export default function RSVP() {
                   >
                     View full menu ↗
                   </a>
+
                   <div className="space-y-4 max-h-80 overflow-auto">
                     {selected.map((m) => {
                       const key = `${m.first}-${m.last}`;
@@ -469,18 +643,6 @@ export default function RSVP() {
                 <Modal onClose={() => setStep("dietary")}>
                   <h2 className="text-xl mb-4">Final preferences</h2>
 
-                  <label className="flex items-center space-x-2 mb-4">
-                    <input
-                      type="checkbox"
-                      checked={showName}
-                      onChange={(e) => setShowName(e.target.checked)}
-                    />
-                    <span>Display our names on the guest list</span>
-                    <span className="text-sm text-gray-500 ml-1">
-                      (recommended)
-                    </span>
-                  </label>
-
                   <label className="flex items-center space-x-2 mb-6">
                     <input
                       type="checkbox"
@@ -519,13 +681,76 @@ export default function RSVP() {
                         setStep("search");
                         setQuery({ first: "", last: "" });
                       }}
-                      className="app-website-rsvp-reset btnFlat btnFlat--primary"
+                      className="px-6 py-2 border-2 border-blue-500 rounded-lg transition hover:bg-blue-500 hover:text-white ml-4"
                     >
                       New search
                     </button>
                   </div>
                 </div>
               )}
+
+              {/* Guest List Section */}
+              <hr className="hrSection mt-12" />
+              <div className="websiteContainerSection mt30">
+                <h2 className="text-2xl font-bold mb-6 text-center">
+                  Guest List
+                </h2>
+
+                {attendingHouseholds.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold mb-4 text-green-600">
+                      Attending ({totalAttending})
+                    </h3>
+                    <div className="space-y-4">
+                      {attendingHouseholds.map((household, i) => (
+                        <div
+                          key={i}
+                          className="border-l-4 border-green-500 pl-4 py-2"
+                        >
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                            {household.guests.map((guest, j) => (
+                              <div key={j} className="text-sm">
+                                {guest.name}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {notAttendingHouseholds.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-500">
+                      Unable to Attend ({totalNotAttending})
+                    </h3>
+                    <div className="space-y-4">
+                      {notAttendingHouseholds.map((household, i) => (
+                        <div
+                          key={i}
+                          className="border-l-4 border-gray-300 pl-4 py-2"
+                        >
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                            {household.guests.map((guest, j) => (
+                              <div key={j} className="text-sm text-gray-500">
+                                {guest.name}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {attendingHouseholds.length === 0 &&
+                  notAttendingHouseholds.length === 0 && (
+                    <p className="text-center text-gray-500">
+                      No RSVPs yet. Be the first to RSVP!
+                    </p>
+                  )}
+              </div>
             </div>
           </div>
         </div>

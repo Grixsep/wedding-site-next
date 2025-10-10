@@ -116,3 +116,12 @@ button,
   background-repeat: repeat-y;
   background-size: contain;
 }
+
+/* Make all checkboxes larger globally */
+input[type="checkbox"] {
+  width: 1.25rem; /* 20px */
+  height: 1.25rem;
+  accent-color: #2563eb; /* Tailwind blue-600 for nice contrast */
+  cursor: pointer;
+  flex-shrink: 0;
+}
