@@ -220,7 +220,14 @@ export default function FAQ() {
                   <h1 className="app-contrast-color websiteFont__headingHero mb20">
                     FAQ
                   </h1>
-                  <div className="websiteFont__hero websiteLinkChilds websiteLinkChilds--underline">
+                  <div
+                    className="
+    websiteFont__hero websiteLinkChilds websiteLinkChilds--underline
+    w-full mx-auto px-4
+    max-w-[52ch] sm:max-w-[60ch] lg:max-w-[68ch]
+    [text-wrap:balance]
+  "
+                  >
                     <p>
                       Everything you need to know about our wedding celebration.
                       Can't find what you're looking for? Feel free to reach
