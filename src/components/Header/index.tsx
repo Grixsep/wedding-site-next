@@ -47,7 +47,15 @@ export default function Header() {
         className="app-website-navigation app-contrast-color websiteNavigation websiteNavigation--vertical"
         data-color="secondary-nav-bg"
       >
-        <div className="websiteNavigation__title websiteFont__nameHero websiteFont__nameHero--vertical websiteNavigation--vertical-firstNav websiteNavigation__titleStamp">
+        <div
+          className="
+    websiteNavigation__title websiteFont__nameHero websiteFont__nameHero--vertical
+    websiteNavigation--vertical-firstNav websiteNavigation__titleStamp
+    self-start md:self-center
+    text-left md:text-center
+    pl-4 md:pl-0
+  "
+        >
           <Link href="/" className="block">
             A<span className="websiteNavigation__titleConjunction" />P
           </Link>
@@ -171,7 +179,7 @@ export default function Header() {
               >
                 {item.title}
               </Link>
-            )
+            ),
           )}
         </nav>
       </div>

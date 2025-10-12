@@ -19,7 +19,7 @@ export default function Events() {
 
       <div className="websiteDecoration websiteDecoration--internal" />
 
-      <div className="pt-16 sm:pt-20 md:pt-24 lg:pt-28">
+      <div className="pt-6 sm:pt-10 md:pt-14 lg:pt-18">
         <div className="app-spinner-container websiteSpinner" />
         <div className="app-contrast-color websiteContainer">
           <div
