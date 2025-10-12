@@ -24,18 +24,18 @@ export default function Home() {
 
       <div className="app-spinner-container websiteSpinner" />
 
-      <div className="app-contrast-color websiteContainer">
+      <div
+        className="app-contrast-color websiteContainer"
+        style={{ paddingTop: 0 }}
+      >
         <div
           className="app-website-page-content websiteFont__body"
           id="scrollMobile"
         >
           <div className="pure-u-1 websites-section">
-            <ul className="app-website-sections" data-idpage="121344114">
-              <li className="app-website-render-wrapper app-website-section-template sectionRender__wrapper websiteSectionWrapper dnone" />
-              <li
-                className="app-website-render-wrapper sectionRender__wrapper websiteSectionWrapper"
-                data-id="15119000"
-              >
+            <ul className="app-website-sections">
+              <li className="app-website-render-wrapper app-website-section-template sectionRender__wrapper websiteSectionWrapper mb5" />
+              <li className="app-website-render-wrapper sectionRender__wrapper websiteSectionWrapper">
                 <div className="app-website-render">
                   <div className="websiteContainerSection">
                     <div className="app-contrast-color websiteFont__headingHero mb30">
