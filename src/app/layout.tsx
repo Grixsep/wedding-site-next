@@ -1,9 +1,5 @@
 // src/app/layout.tsx
 import "./globals.css";
-import "../styles/wedsites.css";
-import "../styles/font-montserrat.min.css";
-import "../styles/dynamicOverlay.min.css";
-import "../styles/font-bodoni.min.css";
 import { Toaster } from "react-hot-toast";
 
 import { Inter } from "next/font/google";
