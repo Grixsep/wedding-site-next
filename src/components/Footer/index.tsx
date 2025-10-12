@@ -19,9 +19,7 @@ const Footer = () => {
         >
           <div className="websites-footer__wrapper">
             <div className="websites-footer__block websites-footer__blockInfo">
-              <div className="websiteFont__nameHero websites-footer__item mb10">
-                An &amp; Paul
-              </div>
+              <div className="websiteFont__nameHero mb10">An &amp; Paul</div>
               <div className="websites-footer__item">March 14, 2026</div>
             </div>
             <div className="websites-footer__block websites-footer__blockAnchors">

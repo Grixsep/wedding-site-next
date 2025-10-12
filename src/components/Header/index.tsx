@@ -26,7 +26,7 @@ export default function Header() {
 
   return (
     <header
-      className={`w-full border-b shadow-sm fixed top-0 left-0 z-50 transition-all duration-300
+      className={`app-fixed-header w-full border-b shadow-sm fixed top-0 left-0 z-50 transition-all duration-300
         bg-gradient-to-b from-black/10 to-transparent ${
           sticky ? "bg-white dark:bg-gray-dark dark:shadow-md" : "bg-white"
         }`}
@@ -171,7 +171,7 @@ export default function Header() {
               >
                 {item.title}
               </Link>
-            ),
+            )
           )}
         </nav>
       </div>

@@ -198,39 +198,51 @@ button,
   text-shadow: 1px 1px 1px #000;
 }
 
-.websiteFont__heading1 {
-  font-family: Bodoni;
-  font-weight: 400;
-  font-size: 33.25px;
-  line-height: 1.2;
-}
-
-.websiteFont__heading2 {
+.websiteFont__nameHero {
   font-family: Bodoni;
   font-weight: 400;
   font-size: 28.5px;
   line-height: 1.2;
 }
 
-.websiteFont__heading3 {
+.websiteFont__nameHero--vertical {
   font-family: Bodoni;
   font-weight: 400;
-  font-size: 33.25px;
+  font-size: 28.5px;
+}
+
+.websiteFont__heading1,
+.websiteFont__heading2,
+.websiteFont__heading3,
+.websiteFont__headingHero,
+.websiteFont__headingName {
+  font-family: Bodoni;
   line-height: 1.2;
+}
+
+.websiteFont__heading1 {
+  font-weight: 400;
+  font-size: 33.25px;
+}
+
+.websiteFont__heading2 {
+  font-weight: 400;
+  font-size: 28.5px;
+}
+
+.websiteFont__heading3 {
+  font-weight: 400;
+  font-size: 33.25px;
 }
 
 .websiteFont__headingHero {
-  font-family: Bodoni;
   font-weight: 400;
   font-size: 42.75px;
-  line-height: 1.2;
 }
 
 .websiteFont__headingName {
-  font-family: Bodoni;
   font-weight: 400;
   font-size: 52.25px;
-  line-height: 1.2;
 }
 
 .websiteFont__hero {
@@ -356,8 +368,6 @@ button,
 
 .websiteHomeHeader__title {
   width: 100%;
-  font-size: 50px;
-  line-height: 60px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #fff;
@@ -380,7 +390,7 @@ button,
 }
 
 /* ========================================
-   Home Content Header
+   Home Content Header (Fixed)
    ======================================== */
 .websiteHomeContentHeader {
   position: relative;
@@ -409,6 +419,22 @@ button,
   transform: translate(-50%, -50%);
   font-weight: 300;
   text-align: center;
+  z-index: 1;
+}
+
+.websiteHomeContentHeader__contentPanel--hideWeddingDate
+  .websiteHomeContentHeader__claim {
+  margin-top: 150px;
+  font-size: 40px;
+  line-height: 64px;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.websiteHomeContentHeader__contentPanel--hideWeddingDate
+  .websiteHomeContentHeader__place {
+  margin-bottom: 150px;
 }
 
 .websiteHomeContentHeader__claim,
@@ -439,6 +465,16 @@ button,
   .websiteHomeContentHeader__contentPanel {
     width: calc(100% - 20px);
   }
+  .websiteHomeContentHeader__contentPanel--hideWeddingDate
+    .websiteHomeContentHeader__claim {
+    margin-top: 125px;
+    font-size: 30px;
+    line-height: 35px;
+  }
+  .websiteHomeContentHeader__contentPanel--hideWeddingDate
+    .websiteHomeContentHeader__place {
+    margin-bottom: 100px;
+  }
   .websiteHomeContentHeader__weddingDate {
     margin-bottom: 20px;
     font-size: 32px;
@@ -457,7 +493,7 @@ button,
 }
 
 /* ========================================
-   Decorations
+   Decorations (Fixed positioning)
    ======================================== */
 .websiteDecoration {
   background-repeat: no-repeat;
@@ -471,8 +507,6 @@ button,
   background-size: cover;
   background-position: center;
   background-image: url("/images/wedding/floral3.png");
-  background-repeat: repeat-x;
-  height: 60px;
 }
 
 .websiteDecoration--internal {
@@ -482,6 +516,15 @@ button,
   width: 100%;
   background-size: 100%;
   background-position: top center;
+  background-image: url("/images/wedding/floral1.png");
+}
+
+.websiteDecoration--bottom {
+  position: relative;
+  margin: 0 auto 75px;
+  height: 40px;
+  background-position: center;
+  background-image: url("/images/wedding/floral2.png");
 }
 
 @media only screen and (max-width: 48em) {
@@ -497,14 +540,9 @@ button,
   .websiteDecoration--internal {
     top: 115px;
   }
-}
-
-.websiteDecoration--bottom {
-  position: relative;
-  margin: 0 auto 75px;
-  height: 40px;
-  background-position: center;
-  background-image: url(/images/wedding/floral2.png);
+  .websiteDecoration--top {
+    background-image: url("/images/wedding/floral3.png");
+  }
 }
 
 /* ========================================
@@ -612,13 +650,11 @@ button,
 .websiteNavigation__title {
   margin: 9px 0;
   color: rgba(0, 0, 0, 0.8);
-  font-weight: bold;
-  font-size: 1.5rem;
 }
 
 .websiteNavigation__titleConjunction:after {
-  content: "&";
-  opacity: 0.5;
+  content: "+";
+  opacity: 1;
 }
 
 .websiteNavigation__titleStamp {
@@ -672,6 +708,18 @@ button,
 
 .websitePage--subPage .websiteNavigation__titleStamp {
   z-index: 10;
+}
+
+@media only screen and (min-width: 48.063em) {
+  .websitePage--subPage .websiteContainer {
+    padding-top: 165px;
+  }
+}
+
+@media only screen and (max-width: 48em) {
+  .websitePage--subPage .websiteContainer {
+    padding-top: 70px;
+  }
 }
 
 @media only screen and (min-width: 48.063em) {
@@ -769,23 +817,33 @@ button,
 .pure-g {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -0.5rem;
+  flex-direction: column;
+  width: 100%;
 }
 
 .pure-u-1 {
   width: 100%;
-  padding: 0 0.5rem;
 }
 
 .pure-u-1-2 {
-  width: 50%;
-  padding: 0 0.5rem;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
-@media only screen and (max-width: 48em) {
-  .pure-u-1-2 {
-    width: 100%;
-  }
+/* RSVP Form specific styles */
+.pure-g.row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+
+.pure-g.row .pure-u-1-2 {
+  width: 100%;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
 }
 
 /* ========================================
@@ -879,6 +937,32 @@ button,
   padding: 1rem 2rem;
 }
 
+.app-website-navigation.app-contrast-color[data-color="secondary-nav-bg"] {
+  /* Dynamic theming for nav */
+}
+
+.app-nav-mobile-container {
+  /* Mobile nav container */
+}
+
+.websites-menu {
+  text-align: center;
+}
+
+.websites-menu-closeBar {
+  display: none;
+}
+
+@media only screen and (max-width: 48em) {
+  .websites-menu-closeBar {
+    display: block;
+    padding: 15px;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 300;
+  }
+}
+
 .websiteNavigation--vertical-secondNav {
   margin-top: 0.5rem;
 }
@@ -898,3 +982,50 @@ input[type="checkbox"] {
   cursor: pointer;
   flex-shrink: 0;
 }
+
+/* Theme menu item styles */
+.theme-menu-item {
+  display: inline-block;
+  position: relative;
+  word-break: break-word;
+}
+
+.theme-menu-item-link {
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+/* 1) Single source of truth for header height */
+:root {
+  --header-h: 115px;
+}
+@media (max-width: 48em) {
+  :root {
+    --header-h: 70px;
+  }
+}
+
+/* 2) Make the <header> box exactly that height */
+.app-fixed-header {
+  height: var(--header-h);
+  overflow: hidden; /* prevents the header from “growing” */
+}
+
+/* 3) Inside the header: cancel the inner nav's fixed/absolute + vertical padding */
+.app-fixed-header .websiteNavigation {
+  position: static !important;
+  top: auto !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertically center title + menu */
+  padding: 0 !important; /* remove the 15px vertical padding */
+}
+.app-fixed-header .app-website-navigation {
+  padding: 0 2rem; /* keep only horizontal padding */
+}
+
+/* 4) Make the hero (and anything else) start right below the header */
+.websiteHomeHeader {
+  margin-top: var(--header-h);
+} /* replaces the hard-coded 115px */
