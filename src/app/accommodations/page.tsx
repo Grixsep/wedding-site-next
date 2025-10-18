@@ -643,14 +643,7 @@ export default function Accommodations() {
                   <h3 className="text-lg font-semibold text-blue-900 mb-2">
                     🚌 Shuttle Service Information
                   </h3>
-                  <p className="text-blue-800">
-                    Complimentary shuttle service will be provided on the
-                    wedding day from a central pickup point in The Domain area.
-                    The shuttle will depart 45 minutes before the ceremony and
-                    return service will be available at the end of the night.
-                    Exact pickup location details will be sent to guests closer
-                    to the wedding date.
-                  </p>
+                  <p className="text-blue-800">Details to follow.</p>
                 </div>
 
                 <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">

@@ -662,7 +662,7 @@ export default function RSVP() {
                       checked={transport}
                       onChange={(e) => setTransport(e.target.checked)}
                     />
-                    <span>We need transportation</span>
+                    <span>We would like transportation</span>
                     <span className="text-sm text-gray-500 ml-6">
                       Shuttle runs to/from The Domain and the venue.
                     </span>

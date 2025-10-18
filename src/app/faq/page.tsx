@@ -199,7 +199,7 @@ export default function FAQ() {
         }
       `}</style>
 
-      <div className="pt-24 sm:pt-32 md:pt-36 lg:pt-40">
+      <div className="pt-6 sm:pt-10 md:pt-14 lg:pt-18">
         {/* Spinner */}
         <div className="app-spinner-container websiteSpinner" />
 
