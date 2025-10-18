@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Image from "next/image";
 
@@ -11,6 +11,7 @@ export default function ClientGallery({ category }: { category: string }) {
   const [cursor, setCursor] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setPhotos([]);
@@ -19,15 +20,40 @@ export default function ClientGallery({ category }: { category: string }) {
     loadMore(0, category, true);
   }, [category]);
 
-  async function loadMore(start = cursor, cat = category, reset = false) {
-    const res = await fetch(
-      `/api/photos?photoCursor=${start}&category=${encodeURIComponent(cat)}`,
-    );
-    const { page, next } = await res.json();
-    setPhotos((prev) => (reset ? page : [...prev, ...page]));
-    if (next !== null) setCursor(next);
-    else setHasMore(false);
-  }
+  const loadMore = useCallback(
+    async (start: number, cat: string, reset = false) => {
+      if (loading) return;
+
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/photos?photoCursor=${start}&category=${encodeURIComponent(cat)}`,
+        );
+        const { page, next } = await res.json();
+
+        console.log("Loaded:", page.length, "photos. Next cursor:", next);
+
+        setPhotos((prev) => (reset ? page : [...prev, ...page]));
+        if (next !== null) {
+          setCursor(next);
+          setHasMore(true);
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error loading photos:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading],
+  );
+
+  const handleLoadMore = useCallback(() => {
+    if (!loading && hasMore) {
+      loadMore(cursor, category);
+    }
+  }, [cursor, category, loading, hasMore, loadMore]);
 
   return (
     <>
@@ -38,10 +64,13 @@ export default function ClientGallery({ category }: { category: string }) {
       ) : (
         <InfiniteScroll
           dataLength={photos.length}
-          next={loadMore}
+          next={handleLoadMore}
           hasMore={hasMore}
-          loader={<h4 className="text-center mt-4">Loading...</h4>}
-          scrollableTarget="scrollMobile"
+          loader={
+            <h4 className="text-center mt-4">
+              Loading... ({photos.length} photos loaded)
+            </h4>
+          }
         >
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2">
             {photos.map((p, i) => (

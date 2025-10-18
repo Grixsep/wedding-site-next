@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const category = searchParams.get("category") || "ceremony";
   const cursor = parseInt(searchParams.get("photoCursor") || "0", 10);
-  const pageSize = 20; // Load 20 images at a time
+  const pageSize = 12; // Load 12 images at a time
 
   const photosDir = path.join(
     process.cwd(),
