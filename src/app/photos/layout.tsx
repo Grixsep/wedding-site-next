@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const CATS = [
-  { key: "ceremony", label: "Ceremony" },
   { key: "elopement", label: "Elopement" },
-  { key: "welcome", label: "Welcome Party" },
   { key: "tea-ceremony", label: "Tea Ceremony" },
+  { key: "welcome", label: "Welcome Party" },
+  { key: "ceremony", label: "Ceremony" },
+  { key: "reception", label: "Reception" },
   { key: "farewell", label: "Farewell Party" },
 ];
 
