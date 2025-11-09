@@ -33,7 +33,7 @@ export type EventItem = {
 
 export const EVENTS: EventItem[] = [
   {
-    date: "Mar 8, 2026 10:00 AM",
+    date: "March 8, 2026 11:00 AM",
     title: "Tea Ceremony",
     subtitle: "Location TBD",
     icon: <LocalCafeIcon />,
@@ -42,7 +42,7 @@ export const EVENTS: EventItem[] = [
     iconColor: "#f57f17",
   },
   {
-    date: "Mar 12, 2026 6:00 PM",
+    date: "March 12, 2026 6:00 PM",
     title: "Welcome Party",
     subtitle: "Location TBD",
     icon: <MusicNoteIcon />,
@@ -51,7 +51,7 @@ export const EVENTS: EventItem[] = [
     iconColor: "#4b0082",
   },
   {
-    date: "Mar 14, 2026 5:30 PM",
+    date: "March 14, 2026 5:30 PM",
     title: "Wedding Day",
     subtitle: "Kindred Oaks, Georgetown, TX",
     icon: <FavoriteIcon />,
@@ -60,7 +60,7 @@ export const EVENTS: EventItem[] = [
     iconColor: "#e91e63",
   },
   {
-    date: "Mar 15, 2026 2:00 PM",
+    date: "Mar 15, 2026 3:00 PM",
     title: "Farewell Party",
     subtitle: "Location TBD",
     icon: <Celebration />,

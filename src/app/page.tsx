@@ -43,9 +43,9 @@ export default function Home() {
                     </div>
                     <div className="websiteFont__hero websiteLinkChilds websiteLinkChilds--underline mb20">
                       <p>
-                        We can't wait to celebrate with you! In anticipation of
-                        the big day, we have created this wedding website to
-                        keep you up to date on all the details of our wedding.
+                        We can't wait to celebrate with you! We have created
+                        this wedding website to keep you up to date on all the
+                        details of our wedding.
                       </p>
                     </div>
                   </div>
