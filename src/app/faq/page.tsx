@@ -6,7 +6,7 @@ export default function FAQ() {
 
   const toggleSection = (index: number) => {
     setExpandedSections((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
 
