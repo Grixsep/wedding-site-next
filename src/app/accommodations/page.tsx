@@ -444,14 +444,22 @@ export default function Accommodations() {
                   </h1>
                   <div className="websiteFont__hero websiteLinkChilds websiteLinkChilds--underline pt-0 sm:pt-4 md:pt-10 lg:pt-10">
                     <p>
-                      We've secured four different hotel blocks special in The
+                      We have secured four different hotel blocks special in the
                       Domain area, each with its own unique vibe. Book by{" "}
-                      <strong>February 1, 2026</strong> to receive our special
-                      group rates. Please reach out to us at{" "}
-                      <a href="mailto:theledewhursts@gmail.com">
+                      <span className="font-bold text-black-700">
+                        February&nbsp;1st
+                      </span>{" "}
+                      to receive our special group rates.
+                    </p>
+                    <p className="mt-4 text-sm text-gray-600">
+                      If you have any questions, please email{" "}
+                      <a
+                        href="mailto:theledewhursts@gmail.com"
+                        className="underline text-blue-600"
+                      >
                         theledewhursts@gmail.com
-                      </a>{" "}
-                      if you have any questions.
+                      </a>
+                      .
                     </p>
                   </div>
                 </div>
@@ -656,9 +664,13 @@ export default function Accommodations() {
                     💰 Important Booking Information
                   </h3>
                   <p className="text-green-800 mb-3">
-                    Please book by <strong>February 1, 2026</strong> to receive
-                    our special group rates shown above. After this date, rooms
-                    will be subject to availability and standard pricing.
+                    Please book by{" "}
+                    <span className="font-bold text-black-700">
+                      February&nbsp;1st
+                    </span>{" "}
+                    to receive our special group rates shown above. After this
+                    date, rooms will be subject to availability and standard
+                    pricing.
                   </p>
                   <p className="text-green-700 text-sm">
                     Click "Book Your Stay" on any hotel above to access our

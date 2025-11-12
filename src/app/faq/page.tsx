@@ -37,7 +37,7 @@ export default function FAQ() {
       questions: [
         {
           q: "What time should I arrive?",
-          a: "Please arrive 30 minutes before the ceremony begins. This gives you time to grab a refreshment, locate your seat, and settle in before the ceremony starts.",
+          a: "Please arrive about 30 minutes before the ceremony begins. The ceremony starts at 5:30 PM, so aim to arrive by 5:00 PM. This will give you time to enjoy a refreshment, find your seat, and settle in before we begin.",
         },
         {
           q: "What is the dress code?",
@@ -147,15 +147,15 @@ export default function FAQ() {
       questions: [
         {
           q: "Tea Ceremony",
-          a: "What: The tea ceremony is a traditional Vietnamese wedding custom where we serve tea to our parents and elders as a sign of respect and gratitude. A professional photographer will be present. All wedding guests are invited.\n\nWhen: Sunday, March 8th at 11:00 AM\n\nWhere: Location TBD\n\nAttire: Smart casual.",
+          a: "What: The tea ceremony is a traditional Vietnamese wedding custom where we serve tea to our parents and elders as a sign of respect and gratitude. A professional photographer will be present. All wedding guests are invited.\n\nWhen: Sunday, March 8th at 11:00 AM\n\nWhere: Location TBD\n\nAttire: Smart casual",
         },
         {
           q: "Welcome Party",
-          a: "What: A relaxed gathering to meet other guests and kick off the celebrations. All wedding guests are invited.\n\nWhen: Thursday, March 12th at 6:00 PM\n\nWhere: Location TBD\n\nAttire: Dressy casual.",
+          a: "What: A relaxed gathering to meet other guests and kick off the celebrations. All wedding guests are invited.\n\nWhen: Thursday, March 12th at 6:00 PM\n\nWhere: Location TBD\n\nAttire: Dressy casual",
         },
         {
           q: "Farewell Party",
-          a: "What: A casual get-together to say goodbye and wrap up the weekend before everyone heads home. All wedding guests are invited.\n\nWhen: Sunday, March 15th at 3:00 PM\n\nWhere: Location TBD\n\nAttire: Comfy casual.",
+          a: "What: A casual get-together to say goodbye and wrap up the weekend before everyone heads home. All wedding guests are invited.\n\nWhen: Sunday, March 15th at 3:00 PM\n\nWhere: Location TBD\n\nAttire: Comfy casual",
         },
         {
           q: "Do I need to RSVP separately for these events?",
@@ -227,7 +227,14 @@ export default function FAQ() {
                     <p>
                       Everything you need to know about our wedding celebration.
                       Can't find what you're looking for? Feel free to reach out
-                      to us at theledewhursts@gmail.com!
+                      to us at{" "}
+                      <a
+                        href="mailto:theledewhursts@gmail.com"
+                        className="underline text-blue-600"
+                      >
+                        theledewhursts@gmail.com
+                      </a>
+                      !
                     </p>
                   </div>
                 </div>

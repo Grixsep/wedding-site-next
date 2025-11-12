@@ -60,7 +60,7 @@ export const EVENTS: EventItem[] = [
     iconColor: "#e91e63",
   },
   {
-    date: "Mar 15, 2026 3:00 PM",
+    date: "March 15, 2026 3:00 PM",
     title: "Farewell Party",
     subtitle: "Location TBD",
     icon: <Celebration />,
