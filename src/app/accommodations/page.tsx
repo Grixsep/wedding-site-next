@@ -452,7 +452,8 @@ export default function Accommodations() {
                       to receive our special group rates.
                     </p>
                     <p className="mt-4 text-sm text-gray-600">
-                      If you have any questions, please email{" "}
+                      If you're trying to reserve a room and it shows as
+                      unavailable before February 1st, please email{" "}
                       <a
                         href="mailto:theledewhursts@gmail.com"
                         className="underline text-blue-600"
