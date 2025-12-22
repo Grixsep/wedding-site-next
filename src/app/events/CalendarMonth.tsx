@@ -20,17 +20,29 @@ import type { EventItem } from "./timeline";
 /** Helpers */
 const MONTHS: Record<string, string> = {
   Jan: "01",
+  January: "01",
   Feb: "02",
+  February: "02",
   Mar: "03",
+  March: "03",
   Apr: "04",
+  April: "04",
   May: "05",
   Jun: "06",
+  June: "06",
   Jul: "07",
+  July: "07",
   Aug: "08",
+  August: "08",
   Sep: "09",
+  Sept: "09",
+  September: "09",
   Oct: "10",
+  October: "10",
   Nov: "11",
+  November: "11",
   Dec: "12",
+  December: "12",
 };
 
 function parseDateLike(dateStr: string) {
@@ -60,7 +72,7 @@ function addHoursISO(
   d: string,
   hh: string,
   mm: string,
-  hours: number,
+  hours: number
 ) {
   const dt = new Date(`${y}-${m}-${d}T${hh}:${mm}:00`);
   dt.setHours(dt.getHours() + hours);
@@ -117,7 +129,7 @@ function buildIcs(events: EventItem[], defaultDurationHours: number) {
       `DTEND;TZID=America/Chicago:${endLocal}`,
       `DESCRIPTION:${escapeText("See our full schedule on paacs.pro ✨")}`,
       e.subtitle ? `LOCATION:${escapeText(e.subtitle)}` : "",
-      "END:VEVENT",
+      "END:VEVENT"
     );
   }
   lines.push("END:VCALENDAR");
@@ -216,7 +228,7 @@ export default function CalendarMonth({
 
   const [selected, setSelected] = React.useState<EventItem | null>(null);
   const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
-    new Date(y0, m0, 1),
+    new Date(y0, m0, 1)
   );
 
   /** Measure cell width (and update on resize) */
@@ -228,7 +240,7 @@ export default function CalendarMonth({
 
     const measure = () => {
       const firstCell = gridRef.current!.querySelector<HTMLDivElement>(
-        'div[data-cell="true"]',
+        'div[data-cell="true"]'
       );
       if (firstCell) setCellWidth(firstCell.getBoundingClientRect().width);
     };
@@ -493,7 +505,7 @@ export default function CalendarMonth({
                 onClick={() =>
                   downloadIcs(
                     `${selected.title.replace(/\s+/g, "_")}.ics`,
-                    buildIcs([selected], defaultDurationHours),
+                    buildIcs([selected], defaultDurationHours)
                   )
                 }
                 variant="outlined"
