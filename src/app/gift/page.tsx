@@ -15,22 +15,36 @@ import { QRCodeSVG } from "qrcode.react";
 // Configuration - Update these with your actual details
 const CONFIG = {
   // Payment links/details
-  wiseLink: "https://wise.com/pay/me/pauld3878",
+  wiseLinkGBP: "https://wise.com/pay/me/pauld3878", // GBP/Other Wise account
+  wiseLinkUSD: "https://wise.com/pay/me/anl10", // USD Wise account
   paypalUsernameGBP: "pauldewh", // GBP PayPal account
   paypalUsernameUSD: "anle531", // USD PayPal account
   venmoUsername: "anthule",
   ukBankDetails: {
-    accountName: "Paul Dewhurst", // Update with actual name on account
-    sortCode: "80-47-09", // Update with your sort code
-    accountNumber: "10469463", // Update with your account number
+    accountName: "Paul Dewhurst",
+    sortCode: "80-47-09",
+    accountNumber: "10469463",
+  },
+  // International bank transfer details (your Wise GBP account for non-Wise users)
+  internationalBankDetails: {
+    accountName: "Paul Dewhurst",
+    iban: "GB XX XXXX XXXX XXXX XXXX XX", // Replace with your actual Wise GBP IBAN
+    bic: "TRWIGB2L",
+    bankName: "Wise",
+    bankAddress: "56 Shoreditch High Street, London, E1 6JJ, United Kingdom",
   },
   contactEmail: "theledewhursts@gmail.com",
   coupleNames: "An & Paul",
   apiEndpoint: "/api/gift" as string | null,
 };
 
-type Currency = "GBP" | "USD" | "EUR" | "OTHER" | "";
-type PaymentMethod = "uk-bank" | "venmo" | "paypal" | "wise";
+type Currency = "GBP" | "USD" | "OTHER" | "";
+type PaymentMethod =
+  | "uk-bank"
+  | "venmo"
+  | "paypal"
+  | "wise"
+  | "international-bank";
 
 const CURRENCY_OPTIONS: {
   value: Currency;
@@ -41,7 +55,6 @@ const CURRENCY_OPTIONS: {
   { value: "", label: "Select currency...", flag: "", symbol: "" },
   { value: "GBP", label: "GBP", flag: "🇬🇧", symbol: "£" },
   { value: "USD", label: "USD", flag: "🇺🇸", symbol: "$" },
-  { value: "EUR", label: "EUR", flag: "🇪🇺", symbol: "€" },
   { value: "OTHER", label: "Other", flag: "🌍", symbol: "" },
 ];
 
@@ -72,6 +85,11 @@ const PAYMENT_METHODS: Record<
       label: "PayPal",
       description: "Send as Friends & Family to avoid fees",
     },
+    {
+      method: "international-bank",
+      label: "International Bank Transfer",
+      description: "Send from any bank worldwide (may have fees)",
+    },
   ],
   USD: [
     {
@@ -91,19 +109,6 @@ const PAYMENT_METHODS: Record<
       description: "Send as Friends & Family to avoid fees",
     },
   ],
-  EUR: [
-    {
-      method: "wise",
-      label: "Wise",
-      description: "Low fees, great exchange rate",
-      recommended: true,
-    },
-    {
-      method: "paypal",
-      label: "PayPal",
-      description: "Send as Friends & Family to avoid fees",
-    },
-  ],
   OTHER: [
     {
       method: "wise",
@@ -115,6 +120,11 @@ const PAYMENT_METHODS: Record<
       method: "paypal",
       label: "PayPal",
       description: "Send as Friends & Family to avoid fees",
+    },
+    {
+      method: "international-bank",
+      label: "International Bank Transfer",
+      description: "Send from any bank worldwide",
     },
   ],
 };
@@ -143,17 +153,22 @@ function Modal({
       <div
         role="dialog"
         aria-modal="true"
-        className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-2"
+        className="fixed inset-0 bg-black/50 flex items-start justify-center z-[100] p-2 pt-32"
       >
-        <div className="bg-white rounded-lg w-full max-w-md mx-2 relative max-h-[min(90vh,40rem)] flex flex-col">
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 z-10"
-          >
-            ✕
-          </button>
-          <div className="p-6 overflow-auto pb-24">{children}</div>
+        <div className="bg-white rounded-lg w-full max-w-md mx-2 relative flex flex-col max-h-[calc(100vh-9rem)]">
+          <div className="flex items-center justify-end p-3 shrink-0">
+            <button
+              onClick={onClose}
+              aria-label="Close"
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="px-6 pb-24 overflow-auto [padding-bottom:calc(env(safe-area-inset-bottom,0)+1.5rem)]">
+            {children}
+          </div>
         </div>
       </div>
       <div className="block md:hidden mt-16">
@@ -378,13 +393,15 @@ function WiseDetails({
 }) {
   const currencySymbol =
     CURRENCY_OPTIONS.find((c) => c.value === currency)?.symbol || "";
+  // Use USD Wise for USD, GBP Wise for everything else
+  const wiseLink = currency === "USD" ? CONFIG.wiseLinkUSD : CONFIG.wiseLinkGBP;
 
   return (
     <div className="bg-green-50 rounded-xl p-4 space-y-4 text-center">
       <div className="flex justify-center">
         <div className="bg-white p-3 rounded-xl shadow-sm">
           <QRCodeSVG
-            value={CONFIG.wiseLink}
+            value={wiseLink}
             size={160}
             level="M"
             includeMargin={false}
@@ -415,13 +432,99 @@ function WiseDetails({
       </div>
 
       <a
-        href={CONFIG.wiseLink}
+        href={wiseLink}
         target="_blank"
         rel="noopener noreferrer"
         className="block w-full py-2 px-4 bg-[#9fe870] hover:bg-[#8fd860] text-gray-900 text-sm font-medium rounded-lg transition-colors"
       >
         Open Wise
       </a>
+    </div>
+  );
+}
+
+// International Bank Transfer Details Component
+function InternationalBankDetails({ reference }: { reference: string }) {
+  return (
+    <div className="bg-indigo-50 rounded-xl p-4 space-y-4 text-left">
+      <h3 className="font-medium text-gray-800 text-sm">
+        International Bank Transfer Details
+      </h3>
+
+      <div className="space-y-2 text-sm">
+        <p className="text-xs text-indigo-600 font-medium mb-2">
+          International Transfer (SWIFT/IBAN)
+        </p>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500">Account Name</span>
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-gray-800">
+              {CONFIG.internationalBankDetails.accountName}
+            </span>
+            <CopyButton
+              text={CONFIG.internationalBankDetails.accountName}
+              label="Account name"
+            />
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500">IBAN</span>
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-gray-800 font-mono text-xs">
+              {CONFIG.internationalBankDetails.iban}
+            </span>
+            <CopyButton
+              text={CONFIG.internationalBankDetails.iban.replace(/\s/g, "")}
+              label="IBAN"
+            />
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500">BIC/SWIFT</span>
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-gray-800 font-mono">
+              {CONFIG.internationalBankDetails.bic}
+            </span>
+            <CopyButton
+              text={CONFIG.internationalBankDetails.bic}
+              label="BIC"
+            />
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500">Bank Name</span>
+          <span className="font-medium text-gray-800">
+            {CONFIG.internationalBankDetails.bankName}
+          </span>
+        </div>
+        <div className="flex justify-between items-start">
+          <span className="text-gray-500">Bank Address</span>
+          <span className="font-medium text-gray-800 text-right text-xs max-w-[180px]">
+            {CONFIG.internationalBankDetails.bankAddress}
+          </span>
+        </div>
+      </div>
+
+      <div className="pt-2 border-t border-indigo-200">
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-500">Reference</span>
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-gray-800">{reference}</span>
+            <CopyButton text={reference} label="Reference" />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-indigo-100 border border-indigo-200 rounded-lg p-3 text-left">
+        <div className="text-xs text-indigo-800">
+          <p className="font-medium mb-1">Bank Transfer Info</p>
+          <p>
+            You can send any currency to this account. SEPA transfers from
+            Europe are usually free. Other international transfers may have fees
+            from your bank.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -468,9 +571,10 @@ export default function GiftPage() {
   const [amount, setAmount] = useState<string>("");
   const [currency, setCurrency] = useState<Currency>("");
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [giftMessages, setGiftMessages] = useState<GiftMessage[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(true);
 
@@ -540,7 +644,7 @@ export default function GiftPage() {
     } catch (error) {
       console.error("Error saving message:", error);
       toast.error(
-        "Could not save your message, but you can still proceed to payment."
+        "Could not save your message, but you can still proceed to payment.",
       );
       setStep("payment");
     } finally {
@@ -595,10 +699,12 @@ export default function GiftPage() {
               <div className="app-website-render-wrapper sectionRender sectionRender__wrapperHeader">
                 <div className="websiteContainerSection">
                   <h1 className="app-contrast-color websiteFont__headingHero mb20">
-                    Honeymoon Fund
+                    Wedding Gift
                   </h1>
                   <div className="websiteFont__hero websiteLinkChilds websiteLinkChilds--underline">
-                    <p>Your presence is the greatest gift of all!</p>
+                    <p>
+                      Thank you for celebrating with us and for your generosity!
+                    </p>
                   </div>
                 </div>
               </div>
@@ -613,8 +719,7 @@ export default function GiftPage() {
                     <p className="text-gray-600 mb-6 leading-relaxed max-w-lg mx-auto">
                       We are so grateful to have you celebrate with us. If you
                       would like to give a gift, we would be incredibly thankful
-                      for a contribution towards our honeymoon adventures or our
-                      new home together.
+                      for a contribution towards our life together.
                     </p>
 
                     <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-100 max-w-md mx-auto">
@@ -858,6 +963,8 @@ export default function GiftPage() {
                         {selectedPayment === "venmo" && "Pay with Venmo"}
                         {selectedPayment === "paypal" && "Pay with PayPal"}
                         {selectedPayment === "wise" && "Pay with Wise"}
+                        {selectedPayment === "international-bank" &&
+                          "International Bank Transfer"}
                       </h2>
                       <p className="text-gray-500 text-sm mt-1">
                         Send{" "}
@@ -883,6 +990,9 @@ export default function GiftPage() {
                     )}
                     {selectedPayment === "wise" && (
                       <WiseDetails amount={parsedAmount} currency={currency} />
+                    )}
+                    {selectedPayment === "international-bank" && (
+                      <InternationalBankDetails reference={reference} />
                     )}
 
                     <button
@@ -959,6 +1069,9 @@ export default function GiftPage() {
                         <br />
                         <strong>PayPal:</strong> Works everywhere but please
                         send as &quot;Friends &amp; Family&quot; to avoid fees.
+                        <br />
+                        <strong>International Bank Transfer:</strong> Use this
+                        if you prefer to send directly from your bank.
                       </div>
                     </details>
 
@@ -980,6 +1093,9 @@ export default function GiftPage() {
                         <br />
                         <strong>PayPal:</strong> Free if sent as &quot;Friends
                         &amp; Family&quot;
+                        <br />
+                        <strong>International Bank Transfer:</strong> Varies by
+                        bank - SEPA transfers in Europe are usually free
                       </div>
                     </details>
 
@@ -997,11 +1113,14 @@ export default function GiftPage() {
                         <strong>Venmo:</strong> Yes, you&apos;ll need a Venmo
                         account
                         <br />
-                        <strong>Wise:</strong> No account needed - you can pay
-                        via bank transfer
+                        <strong>Wise:</strong> Yes, you&apos;ll need a Wise
+                        account to use the Wise link
                         <br />
                         <strong>PayPal:</strong> You can send as a guest or with
                         an account
+                        <br />
+                        <strong>International Bank Transfer:</strong> No - just
+                        use your existing bank
                       </div>
                     </details>
 

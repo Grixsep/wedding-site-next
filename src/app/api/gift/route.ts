@@ -18,14 +18,14 @@ export async function POST(request: NextRequest) {
     if (!amount || typeof amount !== "number" || amount <= 0) {
       return NextResponse.json(
         { error: "Valid amount is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!currency || typeof currency !== "string") {
       return NextResponse.json(
         { error: "Currency is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       console.error("Apps Script error:", data.error);
       return NextResponse.json(
         { error: "Failed to save gift" },
-        { status: 502 }
+        { status: 502 },
       );
     }
 
