@@ -28,10 +28,11 @@ const CONFIG = {
   // International bank transfer details (your Wise GBP account for non-Wise users)
   internationalBankDetails: {
     accountName: "Paul Dewhurst",
-    iban: "GB XX XXXX XXXX XXXX XXXX XX", // Replace with your actual Wise GBP IBAN
-    bic: "TRWIGB2L",
-    bankName: "Wise",
-    bankAddress: "56 Shoreditch High Street, London, E1 6JJ, United Kingdom",
+    iban: "GB 84 TRWI 2308 0166 2655 63",
+    bic: "TRWIGB2LXXX",
+    bankName: "Wise Payments Limited",
+    bankAddress:
+      "1st Floor, Worship Square, 65 Clifton Street, London, EC2A 4JE, United Kingdom",
   },
   contactEmail: "theledewhursts@gmail.com",
   coupleNames: "An & Paul",
