@@ -66,6 +66,7 @@ const PAYMENT_METHODS: Record<
     label: string;
     description: string;
     recommended?: boolean;
+    hasFees?: boolean;
   }[]
 > = {
   "": [],
@@ -90,6 +91,7 @@ const PAYMENT_METHODS: Record<
       method: "international-bank",
       label: "International Bank Transfer",
       description: "Send from any bank worldwide (may have fees)",
+      hasFees: true,
     },
   ],
   USD: [
@@ -126,6 +128,7 @@ const PAYMENT_METHODS: Record<
       method: "international-bank",
       label: "International Bank Transfer",
       description: "Send from any bank worldwide",
+      hasFees: true,
     },
   ],
 };
@@ -154,9 +157,9 @@ function Modal({
       <div
         role="dialog"
         aria-modal="true"
-        className="fixed inset-0 bg-black/50 flex items-start justify-center z-[100] p-2 pt-32"
+        className="fixed inset-0 bg-black/50 flex items-start justify-center z-[100] p-2 pt-24 md:pt-32"
       >
-        <div className="bg-white rounded-lg w-full max-w-md mx-2 relative flex flex-col max-h-[calc(100vh-9rem)]">
+        <div className="bg-white rounded-lg w-full max-w-md mx-2 relative flex flex-col max-h-[calc(100vh-12rem)] md:max-h-[calc(100vh-9rem)]">
           <div className="flex items-center justify-end p-3 shrink-0">
             <button
               onClick={onClose}
@@ -718,9 +721,9 @@ export default function GiftPage() {
                     </div>
 
                     <p className="text-gray-600 mb-6 leading-relaxed max-w-lg mx-auto">
-                      We are so grateful to have you celebrate with us. If you
-                      would like to give a gift, we would be incredibly thankful
-                      for a contribution towards our life together.
+                      We are so grateful to have you celebrate with us. Also, if
+                      you would like to give a gift, we would be incredibly
+                      thankful for a contribution towards our life together.
                     </p>
 
                     <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-100 max-w-md mx-auto">
@@ -924,6 +927,12 @@ export default function GiftPage() {
                                 {payment.recommended && (
                                   <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
                                     Recommended
+                                  </span>
+                                )}
+                                {payment.hasFees && (
+                                  <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                    <FaExclamationTriangle size={10} />
+                                    May have fees
                                   </span>
                                 )}
                               </div>
