@@ -35,9 +35,9 @@ export const EVENTS: EventItem[] = [
   {
     date: "March 8, 2026 11:00 AM",
     title: "Tea Ceremony",
-    subtitle: "Location TBD",
+    subtitle: "The Cathedral\n2403 E 16th St, Austin, TX 78702",
     icon: <LocalCafeIcon />,
-    link: "https://goo.gl/maps/...",
+    link: "https://maps.app.goo.gl/YWtrzAhLkgcMoajN8",
     iconBg: "#fff9c4",
     iconColor: "#f57f17",
   },
@@ -53,7 +53,7 @@ export const EVENTS: EventItem[] = [
   {
     date: "March 14, 2026 5:30 PM",
     title: "Wedding Day",
-    subtitle: "Kindred Oaks, Georgetown, TX",
+    subtitle: "Kindred Oaks\n2100 Co Rd 176, Georgetown, TX 78628",
     icon: <FavoriteIcon />,
     link: "https://maps.app.goo.gl/wqhod8mYzmuvobVT6",
     iconBg: "#fce4ec",
@@ -254,6 +254,8 @@ export default function CustomizedTimeline() {
                   color: "text.secondary",
                   fontSize: { xs: "0.9rem", sm: "1rem" },
                   marginBottom: "10px",
+                  whiteSpace: "pre-line",
+                  lineHeight: 1.35,
                 }}
               >
                 {event.subtitle}
