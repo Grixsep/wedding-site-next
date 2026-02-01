@@ -44,9 +44,9 @@ export const EVENTS: EventItem[] = [
   {
     date: "March 12, 2026 6:00 PM",
     title: "Welcome Party",
-    subtitle: "Location TBD",
+    subtitle: "Moontower Cider Company\n1916 Tillery St, Austin, TX 78723",
     icon: <MusicNoteIcon />,
-    link: "https://goo.gl/maps/...",
+    link: "https://maps.app.goo.gl/mG6DFJkhLoYHR89D7",
     iconBg: "#e1dbebff",
     iconColor: "#4b0082",
   },
@@ -62,9 +62,9 @@ export const EVENTS: EventItem[] = [
   {
     date: "March 15, 2026 3:00 PM",
     title: "Farewell Party",
-    subtitle: "Location TBD",
+    subtitle: "Moontower Cider Company\n1916 Tillery St, Austin, TX 78723",
     icon: <Celebration />,
-    link: "https://goo.gl/maps/...",
+    link: "https://maps.app.goo.gl/mG6DFJkhLoYHR89D7",
     iconBg: "#afd5f0",
     iconColor: "#0041c2",
   },

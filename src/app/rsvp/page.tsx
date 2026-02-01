@@ -235,6 +235,7 @@ export default function RSVP() {
   }
 
   // Process guest list for display - grouped by household, ordered by timestamp (newest first)
+  // Updated to track the most recent timestamp per household
   const groupByHousehold = (guests: GuestListEntry[]) => {
     const grouped = new Map<
       string,
@@ -242,13 +243,22 @@ export default function RSVP() {
     >();
 
     guests.forEach((guest) => {
-      if (!grouped.has(guest.household)) {
+      const existing = grouped.get(guest.household);
+      if (!existing) {
         grouped.set(guest.household, {
-          guests: [],
+          guests: [guest],
           timestamp: guest.timestamp,
         });
+      } else {
+        existing.guests.push(guest);
+        // Keep the most recent timestamp for the household
+        if (
+          new Date(guest.timestamp).getTime() >
+          new Date(existing.timestamp).getTime()
+        ) {
+          existing.timestamp = guest.timestamp;
+        }
       }
-      grouped.get(guest.household)!.guests.push(guest);
     });
 
     // Sort households by timestamp (newest first)
@@ -276,7 +286,16 @@ export default function RSVP() {
     (sum, h) => sum + h.guests.length,
     0,
   );
-  const totalNotAttending = notAttendingHouseholds.reduce(
+
+  // Filter "unable to attend" to show only recent (within 24 hours)
+  const RECENT_NO_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+  const recentNotAttendingHouseholds = notAttendingHouseholds.filter((h) => {
+    const t = new Date(h.timestamp).getTime();
+    return Date.now() - t <= RECENT_NO_MS;
+  });
+
+  const totalRecentNotAttending = recentNotAttendingHouseholds.reduce(
     (sum, h) => sum + h.guests.length,
     0,
   );
@@ -400,155 +419,137 @@ export default function RSVP() {
                             checked={checked}
                             onChange={() => toggleMember(m)}
                           />
-                          {m.first} {m.last} {m.plus_one === "Yes" && "(+1)"}
+                          {m.first} {m.last}
                         </label>
                       );
                     })}
                   </div>
                   <button
+                    disabled={selected.length === 0}
                     onClick={() => setStep("attend")}
-                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
                   >
                     Next
                   </button>
                 </Modal>
               )}
 
-              {/* Attend Modal */}
+              {/* Attendance Modal */}
               {step === "attend" && (
-                <Modal
-                  onClose={() =>
-                    members.length > 1 ? setStep("select") : setStep("search")
-                  }
-                >
+                <Modal onClose={() => setStep("search")}>
                   <h2 className="text-xl mb-4">
-                    Will your party attend the wedding?
+                    Will{" "}
+                    {selected.length === 1
+                      ? `${selected[0].first} ${selected[0].last}`
+                      : "your party"}{" "}
+                    be attending our wedding?
                   </h2>
-                  <div className="flex space-x-4 mb-4">
-                    <label className="flex items-center space-x-1">
+                  <div className="space-y-2">
+                    <label className="flex items-center">
                       <input
                         type="radio"
-                        name="attending"
+                        name="attend"
+                        className="mr-2"
                         checked={attending === "Yes"}
                         onChange={() => setAttending("Yes")}
                       />
-                      <span>Yes</span>
+                      Joyfully accepts
                     </label>
-                    <label className="flex items-center space-x-1">
+                    <label className="flex items-center">
                       <input
                         type="radio"
-                        name="attending"
+                        name="attend"
+                        className="mr-2"
                         checked={attending === "No"}
                         onChange={() => setAttending("No")}
                       />
-                      <span>No</span>
+                      Regretfully declines
                     </label>
                   </div>
                   <button
-                    onClick={() =>
-                      attending === "No" ? handleSubmit() : setStep("events")
-                    }
-                    disabled={loading}
-                    className={`px-4 py-2 rounded transition ${
-                      loading
-                        ? "bg-blue-200 text-gray-600 cursor-not-allowed"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
-                    }`}
+                    onClick={() => {
+                      if (attending === "Yes") {
+                        setStep("events");
+                      } else {
+                        handleSubmit();
+                      }
+                    }}
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                   >
-                    {loading && attending === "No"
-                      ? "Submitting…"
-                      : attending === "No"
-                        ? "Confirm RSVP"
-                        : "Next"}
+                    {attending === "Yes" ? "Next" : "Submit RSVP"}
                   </button>
                 </Modal>
               )}
 
-              {/* Events Selection Modal */}
+              {/* Events Modal */}
               {step === "events" && (
                 <Modal onClose={() => setStep("attend")}>
-                  <h2 className="text-2xl font-semibold mb-3">
-                    Which events will you attend?
+                  <h2 className="text-xl mb-4">
+                    Which events will you be joining?
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
-                    In addition to the wedding, select any other events you'd
-                    like to join.
+                    In addition to the wedding, we have a few other events
+                    planned. Let us know which ones you&apos;d like to attend!
                   </p>
-                  <a
-                    href="/events"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0 px-3 py-1.5 text-sm rounded-md border border-gray-300 hover:bg-gray-50 mb-6 inline-block"
-                  >
-                    View all events ↗
-                  </a>
 
-                  <div className="space-y-3">
-                    {/* Item */}
-                    <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                  <div className="space-y-4">
+                    <label className="flex items-start">
                       <input
                         type="checkbox"
-                        className="mt-1 h-5 w-5"
+                        className="mr-3 mt-1"
                         checked={events.teaCeremony}
                         onChange={(e) =>
-                          setEvents({
-                            ...events,
+                          setEvents((ev) => ({
+                            ...ev,
                             teaCeremony: e.target.checked,
-                          })
+                          }))
                         }
                       />
-                      <div className="leading-6 ml-5">
-                        <span className="font-semibold block">
-                          Tea Ceremony
-                        </span>
-                        <p className="text-sm text-gray-600">
-                          Traditional tea ceremony — Sunday morning
+                      <div>
+                        <span className="font-semibold">Tea Ceremony</span>
+                        <p className="text-sm text-gray-500">
+                          Traditional Vietnamese tea ceremony · Morning of
+                          wedding day
                         </p>
                       </div>
                     </label>
 
-                    {/* Item */}
-                    <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                    <label className="flex items-start">
                       <input
                         type="checkbox"
-                        className="mt-1 h-5 w-5"
+                        className="mr-3 mt-1"
                         checked={events.welcomeParty}
                         onChange={(e) =>
-                          setEvents({
-                            ...events,
+                          setEvents((ev) => ({
+                            ...ev,
                             welcomeParty: e.target.checked,
-                          })
+                          }))
                         }
                       />
-                      <div className="leading-6 ml-3">
-                        <span className="font-semibold block">
-                          Welcome Party
-                        </span>
-                        <p className="text-sm text-gray-600">
-                          Casual welcome gathering — Thursday evening
+                      <div>
+                        <span className="font-semibold">Welcome Party</span>
+                        <p className="text-sm text-gray-500">
+                          Casual gathering · Friday evening before wedding
                         </p>
                       </div>
                     </label>
 
-                    {/* Item */}
-                    <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                    <label className="flex items-start">
                       <input
                         type="checkbox"
-                        className="mt-1 h-5 w-5"
+                        className="mr-3 mt-1"
                         checked={events.farewellParty}
                         onChange={(e) =>
-                          setEvents({
-                            ...events,
+                          setEvents((ev) => ({
+                            ...ev,
                             farewellParty: e.target.checked,
-                          })
+                          }))
                         }
                       />
-                      <div className="leading-6 ml-10">
-                        <span className="font-semibold block">
-                          Farewell Party
-                        </span>
-                        <p className="text-sm text-gray-600">
-                          Final gathering — Sunday afternoon
+                      <div>
+                        <span className="font-semibold">Farewell Brunch</span>
+                        <p className="text-sm text-gray-500">
+                          Sunday morning send-off · Day after wedding
                         </p>
                       </div>
                     </label>
@@ -713,6 +714,7 @@ export default function RSVP() {
                   <Spinner label="Loading guest list…" />
                 ) : (
                   <>
+                    {/* Attending Section */}
                     {attendingHouseholds.length > 0 && (
                       <div className="mb-8">
                         <h3 className="text-lg font-semibold mb-4 text-green-600">
@@ -737,13 +739,14 @@ export default function RSVP() {
                       </div>
                     )}
 
-                    {notAttendingHouseholds.length > 0 && (
+                    {/* Unable to Attend Section - only show recent (within 24h) */}
+                    {totalRecentNotAttending > 0 && (
                       <div>
                         <h3 className="text-lg font-semibold mb-4 text-gray-500">
-                          Unable to Attend ({totalNotAttending})
+                          Unable to Attend
                         </h3>
                         <div className="space-y-4">
-                          {notAttendingHouseholds.map((household, i) => (
+                          {recentNotAttendingHouseholds.map((household, i) => (
                             <div
                               key={i}
                               className="border-l-4 border-gray-300 pl-4 py-2"
