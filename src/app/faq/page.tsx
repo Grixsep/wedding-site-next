@@ -147,15 +147,15 @@ export default function FAQ() {
       questions: [
         {
           q: "Tea Ceremony",
-          a: "What: The tea ceremony is a traditional Vietnamese wedding custom where we serve tea to our parents and elders as a sign of respect and gratitude. A professional photographer will be present. All wedding guests are invited.\n\nWhen: Sunday, March 8th at 11:00 AM\n\nWhere: Location TBD\n\nAttire: Smart casual",
+          a: "What: The tea ceremony is a traditional Vietnamese wedding custom where we serve tea to our parents and elders as a sign of respect and gratitude. A professional photographer will be present. All wedding guests are invited.\n\nWhen: Sunday, March 8th at 11:00 AM\n\nWhere: The Cathedral - 2403 E 16th St, Austin, TX 78702\n\nAttire: Smart casual (Avoid red and light pink)",
         },
         {
           q: "Welcome Party",
-          a: "What: A relaxed gathering to meet other guests and kick off the celebrations. All wedding guests are invited.\n\nWhen: Thursday, March 12th at 6:00 PM\n\nWhere: Location TBD\n\nAttire: Dressy casual",
+          a: "What: A relaxed gathering to meet other guests and kick off the celebrations. All wedding guests are invited.\n\nWhen: Thursday, March 12th at 6:00 PM\n\nWhere: Moontower Cider Company - 1916 Tillery St, Austin, TX 78723\n\nAttire: Dressy casual",
         },
         {
           q: "Farewell Party",
-          a: "What: A casual get-together to say goodbye and wrap up the weekend before everyone heads home. All wedding guests are invited.\n\nWhen: Sunday, March 15th at 3:00 PM\n\nWhere: Location TBD\n\nAttire: Comfy casual",
+          a: "What: A casual get-together to say goodbye and wrap up the weekend before everyone heads home. All wedding guests are invited.\n\nWhen: Sunday, March 15th at 3:00 PM\n\nWhere: Moontower Cider Company - 1916 Tillery St, Austin, TX 78723\n\nAttire: Comfy casual",
         },
         {
           q: "Do I need to RSVP separately for these events?",
